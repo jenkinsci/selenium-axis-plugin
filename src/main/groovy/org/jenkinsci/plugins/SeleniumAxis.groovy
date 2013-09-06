@@ -27,28 +27,21 @@ package org.jenkinsci.plugins
 import hudson.Extension
 import hudson.Functions
 import hudson.Util
-import jenkins.model.Jenkins
+import hudson.matrix.Axis
+import hudson.matrix.AxisDescriptor
+import hudson.matrix.LabelAxis
+import net.sf.json.JSONObject
 import org.kohsuke.stapler.DataBoundConstructor
-import hudson.matrix.*
-import hudson.model.labels.LabelAtom
+import org.kohsuke.stapler.StaplerRequest
+import hudson.model.Descriptor.FormException
+import hudson.util.FormValidation
+import org.kohsuke.stapler.QueryParameter;
 
-
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * {@link Axis} that selects available JDKs.
- *
- * @author Kohsuke Kawaguchi
- */
 public class SeleniumAxis extends Axis {
-    /**
-     * JDK axis was used to be stored as a plain "Axis" with the name "jdk",
-     * so it cannot be configured by any other name.
-     */
+
     @DataBoundConstructor
     public SeleniumAxis(String name, List<String> values) {
-        super(name, values);
+        super()
     }
 
     @Override
@@ -75,16 +68,25 @@ public class SeleniumAxis extends Axis {
     @Extension
     public static class DescriptorImpl extends AxisDescriptor {
 
-        private Selenium sel
+        public String server
 
         public DescriptorImpl(){
-            sel = new Selenium("http://oriel-lc-devci:4444")
+            load()
         }
 
         public List<SeleniumCapability> getSeleniumCapabilities(){
+            def sel = new Selenium(server)
             return sel.seleniumCapabilities
         }
 
+        @Override
+        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            // To persist global configuration information,
+            // set that to properties and call save().
+            req.bindJSON(this, formData)
+            save()
+            return true
+        }
         @Override
         public String getDisplayName() {
             return "Selenium Capability Axis"
@@ -104,8 +106,27 @@ public class SeleniumAxis extends Axis {
             return jsstr("<input type='checkbox' name='values' json='%s' /><label class='attach-previous'>%s</label>",
                     Functions.htmlAttributeEscape(sc.toString()),
                     sc.toString())
-            // '${h.jsStringEscape('<input type="checkbox" name="values" json="'+h.htmlAttributeEscape(l.name)+'" ')}'+has("${h.jsStringEscape(l.name)}")+'${h.jsStringEscape('/><label class="attach-previous">'+l.name+' ('+l.description+')</label>')}'
         }
 
+        public FormValidation doCheckServer(@QueryParameter String value) {
+            if (value.isEmpty()) {
+                return FormValidation.error("You must provide an URL.")
+            }
+
+            try {
+                new URL(value)
+            } catch (final MalformedURLException e) {
+                return FormValidation.error("This is not a valid URL.")
+            }
+
+            return FormValidation.ok()
+        }
+
+        public FormValidation doCheckValues(@QueryParameter String value) {
+            if (value.isEmpty()) {
+                return FormValidation.error("You must provide a configuration.")
+            }
+            return FormValidation.ok()
+        }
     }
 }

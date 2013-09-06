@@ -30,5 +30,6 @@
      <j:forEach var="sc" items="${descriptor.getSeleniumCapabilities()}">
        <f:checkbox name="values" json="${sc.toString()}" checked="${instance.values.contains(sc.toString())}" title="${sc.toString()}" />
      </j:forEach>
+     <f:checkbox name="values" json="Any-Any-Any" checked="Any-Any-Any" title="Any-Any-Any" />
    </f:entry>
  </j:jelly>
