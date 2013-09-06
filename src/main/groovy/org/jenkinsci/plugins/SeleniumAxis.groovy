@@ -41,7 +41,7 @@ public class SeleniumAxis extends Axis {
 
     @DataBoundConstructor
     public SeleniumAxis(String name, List<String> values) {
-        super()
+        super(name, values)
     }
 
     @Override

@@ -32,7 +32,7 @@ version = '0.0.1-SNAPSHOT'
 description = 'Axis for current capabilities of a selenium Server'
 
 jenkinsPlugin {
-    coreVersion = '1.499'
+    coreVersion = '1.420'
     displayName = 'Selenium Capability Axis'
     url = 'https://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
     gitHubUrl = 'https://github.com/jenkinsci/some-plugin'
