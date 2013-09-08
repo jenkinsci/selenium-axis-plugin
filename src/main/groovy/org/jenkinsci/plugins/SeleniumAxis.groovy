@@ -29,6 +29,7 @@ import hudson.Functions
 import hudson.Util
 import hudson.matrix.Axis
 import hudson.matrix.AxisDescriptor
+import hudson.model.Descriptor
 import hudson.matrix.LabelAxis
 import net.sf.json.JSONObject
 import org.kohsuke.stapler.DataBoundConstructor
@@ -40,12 +41,19 @@ import org.kohsuke.stapler.QueryParameter;
 public class SeleniumAxis extends Axis {
 
     //private boolean isEmpty = false
+    private List<SeleniumCapability> seleniumCapability
+
+    public List<SeleniumCapability> getSeleniumCapabilities(){
+        return seleniumCapability
+    }
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<String> values) {
+    public SeleniumAxis(String name, List<SeleniumCapability> values) {
+    //public SeleniumCapabilityAxis(String name, SeleniumCapability... args){
 
+        println "here"
         //try{
-            super(name, values)
+        //    super(name, values)
         //}catch(Exception e){
         //    values = new ArrayList<String>("Any-Any-Any")
         //
@@ -55,9 +63,9 @@ public class SeleniumAxis extends Axis {
     }
 
     //@DataBoundConstructor
-    //public SeleniumAxis(String name ) {
-    //    super(name, ["Any-Any-Any"])
-    //}
+    public SeleniumAxis(String name ) {
+        super(name, ["Any-Any-Any"])
+    }
 
     @Override
     public boolean isSystem() {
@@ -118,7 +126,9 @@ public class SeleniumAxis extends Axis {
 
             return sel.seleniumCapabilities
         }
-
+        public List<Descriptor<SeleniumCapability>> getSeleniumCapabilityDescriptor() {
+            return Hudson.getInstance().getDescriptorList(SeleniumCapability.class);
+        }
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // To persist global configuration information,

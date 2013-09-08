@@ -1,5 +1,9 @@
 package org.jenkinsci.plugins
 
+import hudson.Extension
+import hudson.matrix.AxisDescriptor
+import org.kohsuke.stapler.DataBoundConstructor
+
 import java.util.regex.Matcher
 
 import org.jsoup.Jsoup
@@ -23,6 +27,12 @@ class SeleniumCapability implements Comparable {
         maxInstances = 1
     }
 
+    @DataBoundConstructor
+    SeleniumCapability(String browserName, String platformName, String browserVersion) {
+        browserName = browserName
+        platformName = platformName
+        browserVersion = browserVersion
+    }
 
     SeleniumCapability(String titleAttr) {
 
@@ -68,7 +78,6 @@ class SeleniumCapability implements Comparable {
         this.toString().compareTo o.toString()
     }
 
-
     //public static class SeleniumCapabilityDescriptor extends Descriptor<SeleniumCapability> {
     //    private SeleniumCapability sel
     //    SeleniumCapabilityDescriptor(SeleniumCapability sel){
@@ -83,9 +92,25 @@ class SeleniumCapability implements Comparable {
 
     public Descriptor<SeleniumCapability> getDescriptor() {
         return Hudson.getInstance().getDescriptorByType(SeleniumCapability.class);
+        //return Hudson.getInstance().getDescriptorByType(String.class);
     }
 
-    public String getDisplayName(){
+    public String getDisplayName() {
         return toString()
     }
+
+    @Extension
+    public static class DescriptorImpl extends Descriptor {
+
+        @Override
+        public String getDisplayName() {
+            return "Selenium Capability"
+        }
+
+        @Override
+        public boolean isInstantiable() {
+            return true
+        }
+    }
+
 }

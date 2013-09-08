@@ -23,17 +23,13 @@
  -->
  <?jelly escape-by-default='true'?>
  <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
-   <f:entry title="${%Name}" field="name">
+   <f:entry title="${%Browser Name}" field="browserName">
      <f:textbox default="label" />
    </f:entry>
-   <f:block>
-   <f:entry title="${%Capabilities}" description="${descriptor.getDisplayName()}">
-    <f:hetero-list name="values"
-       descriptors="${descriptor.getSeleniumCapabilities()}"
-       addCaption="${%Add Capability}" hasHeader="true"
-       deleteCaption="${%Delete Capability}"
-       items="${it.values}"/>
-   </f:entry>
-   </f:block>
-
+    <f:entry title="${%Platform Name}" field="platformName">
+      <f:textbox default="platformName" />
+    </f:entry>
+    <f:entry title="${%Browser Version}" field="browserVersion">
+      <f:textbox default="browserVersion" />
+    </f:entry>
  </j:jelly>
