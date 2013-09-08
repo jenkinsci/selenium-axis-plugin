@@ -6,6 +6,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import hudson.model.Descriptor
 
 
 class SeleniumCapability implements Comparable {
@@ -65,5 +66,26 @@ class SeleniumCapability implements Comparable {
     @Override
     int compareTo(Object o) {
         this.toString().compareTo o.toString()
+    }
+
+
+    //public static class SeleniumCapabilityDescriptor extends Descriptor<SeleniumCapability> {
+    //    private SeleniumCapability sel
+    //    SeleniumCapabilityDescriptor(SeleniumCapability sel){
+    //        this.sel = sel
+    //    }
+    //
+    //    public String getDisplayName(){ r
+    //         return sel.toString()
+    //    }
+    //
+    //}
+
+    public Descriptor<SeleniumCapability> getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(SeleniumCapability.class);
+    }
+
+    public String getDisplayName(){
+        return toString()
     }
 }

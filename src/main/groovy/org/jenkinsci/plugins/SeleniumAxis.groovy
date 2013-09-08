@@ -39,20 +39,46 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class SeleniumAxis extends Axis {
 
+    //private boolean isEmpty = false
+
     @DataBoundConstructor
     public SeleniumAxis(String name, List<String> values) {
-        super(name, values)
+
+        //try{
+            super(name, values)
+        //}catch(Exception e){
+        //    values = new ArrayList<String>("Any-Any-Any")
+        //
+        //    this.setName(name)
+        //    this.setValues(values)
+        //}
     }
+
+    //@DataBoundConstructor
+    //public SeleniumAxis(String name ) {
+    //    super(name, ["Any-Any-Any"])
+    //}
 
     @Override
     public boolean isSystem() {
         return true;
     }
 
-    @Override
-    public String getValueString() {
-        return Util.join(getValues(),"/");
-    }
+    //@Override
+    //public List<String> getValues(){
+    //     List<String> empty  = new ArrayList<String>(["Any-Any-Any"])
+    //    if( values.count == 0){
+    //         setValues empty
+    //    }
+    //    return values;
+    //}
+
+    //@Override
+    //public String getValueString() {
+    //    return Util.join(getValues(),"/");
+    //}
+
+
     @Override
     public void addBuildVariable(String value, Map<String,String> map) {
 
@@ -74,8 +100,22 @@ public class SeleniumAxis extends Axis {
             load()
         }
 
+        //@Override
+        //public Axis newInstance( StaplerRequest req, JSONObject formData ) throws FormException
+        //{
+        //    if (formData['values']){
+        //        return new SeleniumAxis( formData.getString( "name" ), formData.getJSONArray('values'))
+        //    }else{  //no checked checkboxes appear
+        //        def v = new ArrayList<String>()
+        //        v.add('Any-Any-Any')
+        //        return new SeleniumAxis( formData.getString( "name" ),  v);
+        //    }
+        //}
+
         public List<SeleniumCapability> getSeleniumCapabilities(){
+        //public List<SeleniumCapability.SeleniumCapabilityDescriptor> getSeleniumCapabilities(){
             def sel = new Selenium(server)
+
             return sel.seleniumCapabilities
         }
 

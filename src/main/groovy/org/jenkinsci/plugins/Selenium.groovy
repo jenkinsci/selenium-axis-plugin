@@ -10,6 +10,8 @@ import org.jsoup.select.Elements
 class Selenium {
 
     def seleniumCapabilities = new ArrayList<SeleniumCapability>()
+    //def seleniumCapabilityDescriptor = new ArrayList<SeleniumCapability.SeleniumCapabilityDescriptor>()
+
     def seleniumVer
     def browsers = new ArrayList<String>()
     def platforms = new ArrayList<String>()
@@ -43,6 +45,8 @@ class Selenium {
         Collections.sort(seleniumCapabilities)
 
         seleniumCapabilities.each() { a_sel ->
+            //seleniumCapabilityDescriptor.add(new SeleniumCapability.SeleniumCapabilityDescriptor(a_sel))
+
             if (!browsers.contains(a_sel.browserName))
                 browsers.add(a_sel.browserName)
             if (!platforms.contains(a_sel.platformName))
