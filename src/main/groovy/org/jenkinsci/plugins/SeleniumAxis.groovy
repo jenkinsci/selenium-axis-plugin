@@ -25,6 +25,7 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
+import hudson.ExtensionPoint
 import hudson.Functions
 import hudson.Util
 import hudson.matrix.Axis
@@ -37,57 +38,31 @@ import org.kohsuke.stapler.StaplerRequest
 import hudson.model.Descriptor.FormException
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter;
+import hudson.model.AbstractDescribableImpl
+import hudson.util.ListBoxModel
+import hudson.DescriptorExtensionList
+import jenkins.model.Jenkins
 
-public class SeleniumAxis extends Axis {
+public class SeleniumAxis extends Axis{
 
     //private boolean isEmpty = false
-    private List<SeleniumCapability> seleniumCapability
+    private final List<SeleniumCapability> seleniumCapabilities
 
     public List<SeleniumCapability> getSeleniumCapabilities(){
-        return seleniumCapability
+        return Collections.unmodifiableList(seleniumCapabilities)
     }
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<SeleniumCapability> values) {
-    //public SeleniumCapabilityAxis(String name, SeleniumCapability... args){
-
+    public SeleniumAxis(String name, List<SeleniumCapability> value) {
+        super(name, value.each(){ it.toString()})
+        //this.values = new ArrayList<SeleniumCapability>(Arrays.asList(Util.tokenize(valueString)));
         println "here"
-        //try{
-        //    super(name, values)
-        //}catch(Exception e){
-        //    values = new ArrayList<String>("Any-Any-Any")
-        //
-        //    this.setName(name)
-        //    this.setValues(values)
-        //}
     }
 
-    //@DataBoundConstructor
-    public SeleniumAxis(String name ) {
-        super(name, ["Any-Any-Any"])
-    }
-
-    @Override
     public boolean isSystem() {
         return true;
     }
 
-    //@Override
-    //public List<String> getValues(){
-    //     List<String> empty  = new ArrayList<String>(["Any-Any-Any"])
-    //    if( values.count == 0){
-    //         setValues empty
-    //    }
-    //    return values;
-    //}
-
-    //@Override
-    //public String getValueString() {
-    //    return Util.join(getValues(),"/");
-    //}
-
-
-    @Override
     public void addBuildVariable(String value, Map<String,String> map) {
 
        //so the value is PLATFORM-BROWSER-VERSION
@@ -99,36 +74,46 @@ public class SeleniumAxis extends Axis {
        map.put(name + "_VERSION", parts[2]);
     }
 
-    @Extension
-    public static class DescriptorImpl extends AxisDescriptor {
+    //public Iterator<String> iterator() {
+    //    return getValues().iterator();
+    //}
 
+    //public int size() {
+    //    return getValues().size();
+    //}
+
+    //public String value(int index) {
+    //    return getValues().get(index);
+    //}
+
+    public int compareTo(SeleniumAxis that) {
+        return this.name.compareTo(that.name);
+    }
+
+
+    @Extension
+    public static class DescriptorImpl extends AxisDescriptor{
         public String server
 
-        public DescriptorImpl(){
+        public DescriptorImpl() {
             load()
         }
 
-        //@Override
-        //public Axis newInstance( StaplerRequest req, JSONObject formData ) throws FormException
-        //{
-        //    if (formData['values']){
-        //        return new SeleniumAxis( formData.getString( "name" ), formData.getJSONArray('values'))
-        //    }else{  //no checked checkboxes appear
-        //        def v = new ArrayList<String>()
-        //        v.add('Any-Any-Any')
-        //        return new SeleniumAxis( formData.getString( "name" ),  v);
-        //    }
-        //}
+        public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
+            def xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
 
-        public List<SeleniumCapability> getSeleniumCapabilities(){
-        //public List<SeleniumCapability.SeleniumCapabilityDescriptor> getSeleniumCapabilities(){
-            def sel = new Selenium(server)
+            def jjj = SeleniumCapability.class
+
+            return xxx
+        }
+
+        public List<SeleniumCapability> getSeleniumCapabilities() {
+             def sel = new Selenium(server)
 
             return sel.seleniumCapabilities
         }
-        public List<Descriptor<SeleniumCapability>> getSeleniumCapabilityDescriptor() {
-            return Hudson.getInstance().getDescriptorList(SeleniumCapability.class);
-        }
+
+
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // To persist global configuration information,
@@ -137,6 +122,7 @@ public class SeleniumAxis extends Axis {
             save()
             return true
         }
+
         @Override
         public String getDisplayName() {
             return "Selenium Capability Axis"
@@ -147,9 +133,8 @@ public class SeleniumAxis extends Axis {
             return true
         }
 
-
         private String jsstr(String body, Object... args) {
-            return '\"'+Functions.jsStringEscape(String.format(body,args))+'\"';
+            return '\"' + Functions.jsStringEscape(String.format(body, args)) + '\"';
         }
 
         public String buildLabelCheckBox(SeleniumCapability sc, LabelAxis instance) {
@@ -179,4 +164,5 @@ public class SeleniumAxis extends Axis {
             return FormValidation.ok()
         }
     }
+
 }

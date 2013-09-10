@@ -1,7 +1,8 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-import hudson.matrix.AxisDescriptor
+import hudson.model.AbstractDescribableImpl
+import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 
 import java.util.regex.Matcher
@@ -10,10 +11,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import hudson.model.Descriptor
 
-
-class SeleniumCapability implements Comparable {
+class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> implements Comparable {
 
     private Integer maxInstances
     private String browserName
@@ -35,7 +34,6 @@ class SeleniumCapability implements Comparable {
     }
 
     SeleniumCapability(String titleAttr) {
-
         this()
 
         Matcher m = (titleAttr =~ /(platform|browserName|version)=(\w+)/)
@@ -47,7 +45,6 @@ class SeleniumCapability implements Comparable {
                 this.browserName = m.group(2)
             else if (m.group(1).equals("version"))
                 this.browserVersion = m.group(2)
-
         }
     }
 
@@ -73,43 +70,17 @@ class SeleniumCapability implements Comparable {
         this.toString().equals(o.toString())
     }
 
-    @Override
     int compareTo(Object o) {
         this.toString().compareTo o.toString()
-    }
-
-    //public static class SeleniumCapabilityDescriptor extends Descriptor<SeleniumCapability> {
-    //    private SeleniumCapability sel
-    //    SeleniumCapabilityDescriptor(SeleniumCapability sel){
-    //        this.sel = sel
-    //    }
-    //
-    //    public String getDisplayName(){ r
-    //         return sel.toString()
-    //    }
-    //
-    //}
-
-    public Descriptor<SeleniumCapability> getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SeleniumCapability.class);
-        //return Hudson.getInstance().getDescriptorByType(String.class);
     }
 
     public String getDisplayName() {
         return toString()
     }
 
-    @Extension
-    public static class DescriptorImpl extends Descriptor {
-
-        @Override
-        public String getDisplayName() {
-            return "Selenium Capability"
-        }
-
-        @Override
-        public boolean isInstantiable() {
-            return true
+    @Extension public static class DescriptorImpl extends Descriptor<SeleniumCapability> {
+        @Override public String getDisplayName() {
+            return "Selenium Capability";
         }
     }
 

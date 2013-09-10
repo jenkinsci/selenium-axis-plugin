@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins
 
-//import java.util.regex.Matcher
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -10,7 +8,6 @@ import org.jsoup.select.Elements
 class Selenium {
 
     def seleniumCapabilities = new ArrayList<SeleniumCapability>()
-    //def seleniumCapabilityDescriptor = new ArrayList<SeleniumCapability.SeleniumCapabilityDescriptor>()
 
     def seleniumVer
     def browsers = new ArrayList<String>()

@@ -26,14 +26,12 @@
    <f:entry title="${%Name}" field="name">
      <f:textbox default="label" />
    </f:entry>
-   <f:block>
-   <f:entry title="${%Capabilities}" description="${descriptor.getDisplayName()}">
-    <f:hetero-list name="values"
-       descriptors="${descriptor.getSeleniumCapabilities()}"
-       addCaption="${%Add Capability}" hasHeader="true"
-       deleteCaption="${%Delete Capability}"
-       items="${it.values}"/>
-   </f:entry>
-   </f:block>
 
+   <f:entry title="${%Selenium Capabilities}" field="seleniumCapabilities">
+      <f:hetero-list name="seleniumCapabilities" hasHeader="true"
+                     descriptors="${descriptor.seleniumCapabilities()}"
+                     items="${instance.seleniumCapabilities}"
+                     addCaption="${%Add Entries}"
+                     deleteCaption="${%Delete}"/>
+   </f:entry>
  </j:jelly>
