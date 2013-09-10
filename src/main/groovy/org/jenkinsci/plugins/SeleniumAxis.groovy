@@ -45,18 +45,30 @@ import jenkins.model.Jenkins
 
 public class SeleniumAxis extends Axis{
 
-    //private boolean isEmpty = false
     private final List<SeleniumCapability> seleniumCapabilities
+    private final String name
 
-    public List<SeleniumCapability> getSeleniumCapabilities(){
-        return Collections.unmodifiableList(seleniumCapabilities)
+    public SeleniumAxis(String name, String value){
+        super(name, value)
     }
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<SeleniumCapability> value) {
-        super(name, value.each(){ it.toString()})
-        //this.values = new ArrayList<SeleniumCapability>(Arrays.asList(Util.tokenize(valueString)));
-        println "here"
+    public SeleniumAxis(String name, List<SeleniumCapability> values){
+        super(name, convertSeleniumCapabilitiesToString(values))
+
+        this.seleniumCapabilities = values
+    }
+
+    final String convertSeleniumCapabilitiesToString(List<SeleniumCapability> values){
+        StringBuilder ret = new StringBuilder()
+
+        values.each(){ret.append(it.toString())}
+
+        return ret.toString()
+    }
+
+    public List<SeleniumCapability> getSeleniumCapabilities(){
+        return Collections.unmodifiableList(seleniumCapabilities)
     }
 
     public boolean isSystem() {
