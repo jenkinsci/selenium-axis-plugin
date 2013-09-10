@@ -28,9 +28,9 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
 
     @DataBoundConstructor
     SeleniumCapability(String browserName, String platformName, String browserVersion) {
-        browserName = browserName
-        platformName = platformName
-        browserVersion = browserVersion
+        this.browserName = browserName
+        this.platformName = platformName
+        this.browserVersion = browserVersion
     }
 
     SeleniumCapability(String titleAttr) {

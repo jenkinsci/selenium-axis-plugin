@@ -45,27 +45,20 @@ import jenkins.model.Jenkins
 
 public class SeleniumAxis extends Axis{
 
-    private final List<SeleniumCapability> seleniumCapabilities
-    private final String name
+    public final List<SeleniumCapability> seleniumCapabilities
+
+
 
     public SeleniumAxis(String name, String value){
         super(name, value)
     }
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<SeleniumCapability> values){
-        super(name, convertSeleniumCapabilitiesToString(values))
-
-        this.seleniumCapabilities = values
+    public SeleniumAxis(String name, List<SeleniumCapability> seleniumCapabilities){
+        super(name, "seleniumCapabilities")
+        this.seleniumCapabilities = seleniumCapabilities
     }
 
-    final String convertSeleniumCapabilitiesToString(List<SeleniumCapability> values){
-        StringBuilder ret = new StringBuilder()
-
-        values.each(){ret.append(it.toString())}
-
-        return ret.toString()
-    }
 
     public List<SeleniumCapability> getSeleniumCapabilities(){
         return Collections.unmodifiableList(seleniumCapabilities)
@@ -99,7 +92,7 @@ public class SeleniumAxis extends Axis{
     //}
 
     public int compareTo(SeleniumAxis that) {
-        return this.name.compareTo(that.name);
+        return this.name.compareTo(that.name)
     }
 
 
@@ -112,7 +105,8 @@ public class SeleniumAxis extends Axis{
         }
 
         public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
-            def xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
+            //def xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
+            DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> >  xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
 
             def jjj = SeleniumCapability.class
 
