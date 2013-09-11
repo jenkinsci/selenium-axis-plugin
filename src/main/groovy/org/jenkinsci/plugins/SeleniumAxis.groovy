@@ -1,4 +1,3 @@
-
 /*
 * The MIT License
 *
@@ -47,18 +46,23 @@ public class SeleniumAxis extends Axis{
 
     public final List<SeleniumCapability> seleniumCapabilities
 
-
-
     public SeleniumAxis(String name, String value){
         super(name, value)
     }
 
     @DataBoundConstructor
     public SeleniumAxis(String name, List<SeleniumCapability> seleniumCapabilities){
-        super(name, "seleniumCapabilities")
+        super(name, SeleniumAxis.convertToAxisValue(seleniumCapabilities))
         this.seleniumCapabilities = seleniumCapabilities
     }
 
+    public static String convertToAxisValue(List<SeleniumCapability> seleniumCapabilities){
+        def ret = new StringBuilder()
+
+        seleniumCapabilities.each(){ret.append(it.toString()).append(' ')}
+
+        return ret.toString()
+    }
 
     public List<SeleniumCapability> getSeleniumCapabilities(){
         return Collections.unmodifiableList(seleniumCapabilities)

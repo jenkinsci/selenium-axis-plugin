@@ -48,15 +48,15 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
         }
     }
 
-    def incr = {->
+    public Integer incr() {
         maxInstances++
     }
 
-    def toString2 = {->
+    public String toString2() {
         String.format("%s %s %s %s", platformName, browserName, browserVersion, maxInstances)
     }
 
-    def combinationFilter = {->
+    public String combinationFilter() {
         String.format("(TEST_PLATFORM=='%s' && TEST_BROWSER=='%s' && TEST_VERSION=='%s')", platformName, browserName, browserVersion)
     }
 
@@ -82,6 +82,18 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
         @Override public String getDisplayName() {
             return "Selenium Capability";
         }
+    }
+
+    public String getBrowserName(){
+        this.browserName
+    }
+
+    public String getPlatformName(){
+        this.platformName
+    }
+
+    public String getBrowserVersion(){
+        this.browserVersion
     }
 
 }
