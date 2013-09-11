@@ -17,8 +17,8 @@ namespace(lib.FormTagLib).with {
     entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
         hetero_list( name:       "seleniumCapabilities",
                      hasHeader:  true,
-                     descriptors:descriptor.seleniumCapabilities(),
-                     items:      instance.seleniumCapabilities,
+                     descriptors:descriptor.complexAxisItemTypes(),
+                     items:      instance.getComplexAxisItems(),
                      addCaption: "Add Entries",
                      deleteCaption:"Delete")
     }

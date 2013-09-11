@@ -11,7 +11,7 @@ public abstract class ComplexAxis extends Axis {
 
     private final List<? extends ComplexAxisItem> complexAxisItems;
 
-    protected List<ComplexAxisItem> getComplexAxisItems(){
+    public List<? extends ComplexAxisItem> getComplexAxisItems(){
         return Collections.unmodifiableList(complexAxisItems);
     }
 
@@ -34,6 +34,7 @@ public abstract class ComplexAxis extends Axis {
 
         return ret.toString();
     }
+
 
     @Override
     public void addBuildVariable(String value, Map<String,String> map){}

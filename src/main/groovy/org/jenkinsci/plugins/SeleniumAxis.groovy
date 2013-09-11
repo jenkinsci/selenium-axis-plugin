@@ -24,55 +24,34 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-import hudson.ExtensionPoint
-import hudson.Functions
-import hudson.Util
-import hudson.matrix.Axis
-import hudson.matrix.AxisDescriptor
-import hudson.model.Descriptor
-import hudson.matrix.LabelAxis
-import net.sf.json.JSONObject
+//import hudson.ExtensionPoint
+//import hudson.Functions
+//import hudson.Util
+//import hudson.matrix.Axis
+//import hudson.matrix.AxisDescriptor
+//import hudson.model.Descriptor
+//import hudson.matrix.LabelAxis
+//import net.sf.json.JSONObject
 import org.kohsuke.stapler.DataBoundConstructor
-import org.kohsuke.stapler.StaplerRequest
-import hudson.model.Descriptor.FormException
+//import org.kohsuke.stapler.StaplerRequest
+//import hudson.model.Descriptor.FormException
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter;
-import hudson.model.AbstractDescribableImpl
-import hudson.util.ListBoxModel
-import hudson.DescriptorExtensionList
-import jenkins.model.Jenkins
+//import hudson.model.AbstractDescribableImpl
+//import hudson.util.ListBoxModel
+//import hudson.DescriptorExtensionList
+//import jenkins.model.Jenkins
 
 public class SeleniumAxis extends ComplexAxis{
-
-    //public final List<SeleniumCapability> seleniumCapabilities
-
-    //public SeleniumAxis(String name, String value){
-    //    super(name, value)
-    //}
 
     @DataBoundConstructor
     public SeleniumAxis(String name, List<SeleniumCapability> seleniumCapabilities){
         super(name, seleniumCapabilities)
-        //this.seleniumCapabilities = seleniumCapabilities
     }
 
-    //public static String convertToAxisValue(List<SeleniumCapability> seleniumCapabilities){
-    //    def ret = new StringBuilder()
-
-    //    seleniumCapabilities.each(){ret.append(it.toString()).append(' ')}
-
-    //    return ret.toString()
-    //}
-
-    //public List<SeleniumCapability> getSeleniumCapabilities(){
-    //    return Collections.unmodifiableList(seleniumCapabilities)
-    //}
-
-
-    //@Override
-    //public boolean isSystem() {
-    //    return true
-    //}
+    public List<SeleniumCapability> getSeleniumCapabilities(){
+        return this.getComplexAxisItems() as List<SeleniumCapability>
+    }
 
     @Override
     public void addBuildVariable(String value, Map<String,String> map) {
@@ -86,21 +65,9 @@ public class SeleniumAxis extends ComplexAxis{
        map.put(name + "_VERSION", parts[2]);
     }
 
-    //public Iterator<String> iterator() {
-    //    return getValues().iterator();
+    //public int compareTo(SeleniumAxis that) {
+    //    return this.name.compareTo(that.name)
     //}
-
-    //public int size() {
-    //    return getValues().size();
-    //}
-
-    //public String value(int index) {
-    //    return getValues().get(index);
-    //}
-
-    public int compareTo(SeleniumAxis that) {
-        return this.name.compareTo(that.name)
-    }
 
 
     @Extension
@@ -118,13 +85,10 @@ public class SeleniumAxis extends ComplexAxis{
             return sel.seleniumCapabilities
         }
 
-
-
         @Override
         public String getDisplayName() {
             return "Selenium Capability Axis"
         }
-
 
         public FormValidation doCheckServer(@QueryParameter String value) {
             if (value.isEmpty()) {
@@ -140,12 +104,12 @@ public class SeleniumAxis extends ComplexAxis{
             return FormValidation.ok()
         }
 
-        public FormValidation doCheckValues(@QueryParameter String value) {
-            if (value.isEmpty()) {
-                return FormValidation.error("You must provide a configuration.")
-            }
-            return FormValidation.ok()
-        }
+        //public FormValidation doCheckValues(@QueryParameter String value) {
+        //    if (value.isEmpty()) {
+        //        return FormValidation.error("You must provide a configuration.")
+        //    }
+        //    return FormValidation.ok()
+        //}
     }
 
 }

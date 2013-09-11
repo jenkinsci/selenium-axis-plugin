@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-import hudson.model.Descriptor
+//import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 
 import java.util.regex.Matcher
