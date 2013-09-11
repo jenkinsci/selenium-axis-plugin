@@ -1,18 +1,12 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-import hudson.model.AbstractDescribableImpl
 import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 
 import java.util.regex.Matcher
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
-
-class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> implements Comparable {
+class SeleniumCapability extends  ComplexAxisItem implements Comparable {
 
     private Integer maxInstances
     private String browserName
@@ -52,10 +46,6 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
         maxInstances++
     }
 
-    public String toString2() {
-        String.format("%s %s %s %s", platformName, browserName, browserVersion, maxInstances)
-    }
-
     public String combinationFilter() {
         String.format("(TEST_PLATFORM=='%s' && TEST_BROWSER=='%s' && TEST_VERSION=='%s')", platformName, browserName, browserVersion)
     }
@@ -65,24 +55,6 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
         String.format("%s-%s-%s", platformName, browserName, browserVersion)
     }
 
-    @Override
-    boolean equals(Object o) {
-        this.toString().equals(o.toString())
-    }
-
-    int compareTo(Object o) {
-        this.toString().compareTo o.toString()
-    }
-
-    public String getDisplayName() {
-        return toString()
-    }
-
-    @Extension public static class DescriptorImpl extends Descriptor<SeleniumCapability> {
-        @Override public String getDisplayName() {
-            return "Selenium Capability";
-        }
-    }
 
     public String getBrowserName(){
         this.browserName
@@ -96,4 +68,9 @@ class SeleniumCapability extends  AbstractDescribableImpl<SeleniumCapability> im
         this.browserVersion
     }
 
+    @Extension public static class DescriptorImpl extends ComplexAxisItemDescriptor {
+        @Override public String getDisplayName() {
+            return "Selenium Capability";
+        }
+    }
 }
