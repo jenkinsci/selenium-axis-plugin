@@ -11,14 +11,15 @@ tags they use. Views are always organized according to its owner class,
 so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
-    entry(title:_("Platform Name"), field:"platformName") {
-        textbox( default:"Any")
+    entry(title: _("Name"), field:"name") {
+        textbox( default:"label")
     }
-    entry(title:_("Browser Name"), field:"browserName") {
-        textbox( default:"Any")
-    }
-    entry(title:_("Browser Version"), field:"browserVersion") {
-        textbox( default:"Any")
+    entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
+        hetero_list( name:       "seleniumCapabilities",
+                     hasHeader:  true,
+                     descriptors:descriptor.seleniumCapabilities(),
+                     items:      instance.seleniumCapabilities,
+                     addCaption: "Add Entries",
+                     deleteCaption:"Delete")
     }
 }
-
