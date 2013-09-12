@@ -90,6 +90,13 @@ public class SeleniumAxis extends ComplexAxis{
             return "Selenium Capability Axis"
         }
 
+        @Override
+        public List<SeleniumCapability> loadDefaultItems(){
+            def sel = new Selenium(server)
+
+            return sel.seleniumCapabilities
+        }
+
         public FormValidation doCheckServer(@QueryParameter String value) {
             if (value.isEmpty()) {
                 return FormValidation.error("You must provide an URL.")

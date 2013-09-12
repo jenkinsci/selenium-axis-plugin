@@ -7,7 +7,7 @@ import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
-
+import java.util.List;
 
 public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
@@ -29,6 +29,9 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
         save();
         return true;
     }
+
+
+    public abstract List<? extends ComplexAxisItem> loadDefaultItems();
 
     @Override
     public String getDisplayName() {

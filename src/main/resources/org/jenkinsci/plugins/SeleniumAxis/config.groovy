@@ -16,10 +16,10 @@ namespace(lib.FormTagLib).with {
     }
     entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
         hetero_list( name:       "seleniumCapabilities",
-                     hasHeader:  true,
+                     //hasHeader:  true,
                      descriptors:descriptor.complexAxisItemTypes(),
-                     items:      instance?.getComplexAxisItems(),
-                     addCaption: "Add Entries",
-                     deleteCaption:"Delete")
+                     items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
+                     //addCaption: "Add Entries",
+                     //deleteCaption:"Delete")
     }
 }
