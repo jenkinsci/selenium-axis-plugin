@@ -2,19 +2,12 @@ package org.jenkinsci.plugins;
 
 import hudson.DescriptorExtensionList;
 import hudson.Extension;
-import hudson.Functions;
 import hudson.matrix.AxisDescriptor;
-import hudson.matrix.LabelAxis;
 import hudson.model.Descriptor;
-import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
@@ -27,7 +20,6 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
         return xxx;
     }
-
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
