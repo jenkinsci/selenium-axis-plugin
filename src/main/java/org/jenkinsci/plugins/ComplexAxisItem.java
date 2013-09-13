@@ -4,8 +4,12 @@ import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
+import jenkins.model.Jenkins;
+
+import java.util.List;
 
 public abstract class ComplexAxisItem extends AbstractDescribableImpl<ComplexAxisItem> implements Comparable, Describable<ComplexAxisItem> {
+
 
     @Override
     public boolean equals(Object o) {

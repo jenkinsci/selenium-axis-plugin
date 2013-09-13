@@ -14,6 +14,6 @@ namespace(lib.FormTagLib).with {
     entry(title:_("Selenium Dynamic Capabilities"), field:"seleniumCapabilities") {
         hetero_list( name:       "seleniumCapabilities",
                 descriptors:descriptor.complexAxisItemTypes(),
-                items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
+                items:      instance?.getComplexAxisItems())
     }
 }

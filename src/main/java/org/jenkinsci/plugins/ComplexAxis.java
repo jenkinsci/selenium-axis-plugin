@@ -1,13 +1,12 @@
 package org.jenkinsci.plugins;
 
 import hudson.matrix.Axis;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ComplexAxis extends Axis {
+public abstract class ComplexAxis extends Axis{
 
     private final List<? extends ComplexAxisItem> complexAxisItems;
 
