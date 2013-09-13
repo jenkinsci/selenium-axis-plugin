@@ -24,28 +24,14 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-//import hudson.ExtensionPoint
-//import hudson.Functions
-//import hudson.Util
-//import hudson.matrix.Axis
-//import hudson.matrix.AxisDescriptor
-//import hudson.model.Descriptor
-//import hudson.matrix.LabelAxis
-//import net.sf.json.JSONObject
 import org.kohsuke.stapler.DataBoundConstructor
-//import org.kohsuke.stapler.StaplerRequest
-//import hudson.model.Descriptor.FormException
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter;
-//import hudson.model.AbstractDescribableImpl
-//import hudson.util.ListBoxModel
-//import hudson.DescriptorExtensionList
-//import jenkins.model.Jenkins
 
 public class SeleniumAxis extends ComplexAxis{
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<SeleniumCapability> seleniumCapabilities){
+    public SeleniumAxis(String name, List<? extends ComplexAxisItem> seleniumCapabilities){
         super(name, seleniumCapabilities)
     }
 
@@ -91,10 +77,12 @@ public class SeleniumAxis extends ComplexAxis{
         }
 
         @Override
-        public List<SeleniumCapability> loadDefaultItems(){
+        public List<SeleniumDynamicCapability> loadDefaultItems(){
             def sel = new Selenium(server)
 
-            return sel.seleniumCapabilities
+            def ret = new ArrayList<SeleniumDynamicCapability>()
+            ret.add(new SeleniumDynamicCapability(sel.getSeleniumCapabilities()))
+            return ret
         }
 
         public FormValidation doCheckServer(@QueryParameter String value) {
