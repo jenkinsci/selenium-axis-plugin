@@ -10,18 +10,11 @@ import java.util.List;
 
 public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
-    //public ComplexAxisDescriptor() {
-    //    Descriptor xx = Jenkins.getInstance().getDescriptor(this.clazz);
-
-    //    xx = xx;
-    //}
-
     public DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> > complexAxisItemTypes() {
         DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
 
         return xxx;
     }
-
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
@@ -31,7 +24,6 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
         save();
         return true;
     }
-
 
     public abstract List<? extends ComplexAxisItem> loadDefaultItems();
 

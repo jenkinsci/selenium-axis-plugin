@@ -2,6 +2,7 @@ package org.jenkinsci.plugins
 
 import hudson.Extension
 import org.kohsuke.stapler.DataBoundConstructor
+import hudson.model.Descriptor
 
 import java.util.regex.Matcher
 
@@ -68,6 +69,16 @@ class SeleniumCapability extends  ComplexAxisItem implements Comparable {
     }
 
     @Extension public static class DescriptorImpl extends ComplexAxisItemDescriptor {
+        private static Descriptor<? extends ComplexAxisDescriptor> topLevelDescriptor;
+
+        protected static Descriptor<? extends ComplexAxisDescriptor> getTopLevelDescriptor(){
+            return topLevelDescriptor;
+        }
+
+        protected static void setTopLevelDescriptor( Descriptor<? extends ComplexAxisDescriptor> topLevelDescriptor){
+            ComplexAxisItemDescriptor.topLevelDescriptor = topLevelDescriptor;
+        }
+
         @Override public String getDisplayName() {
             return "Selenium Capability";
         }

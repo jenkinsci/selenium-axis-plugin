@@ -58,7 +58,11 @@ public class SeleniumAxis extends ComplexAxis{
 
     @Extension
     public static class DescriptorImpl extends ComplexAxisDescriptor{
-        public String server
+        private String server
+
+        public String getServer(){
+            return server
+        }
 
         //public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
         //    DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> >  xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
@@ -78,11 +82,17 @@ public class SeleniumAxis extends ComplexAxis{
 
         @Override
         public List<SeleniumDynamicCapability> loadDefaultItems(){
-            def sel = new Selenium(server)
+            //def sel = new Selenium(server)
 
-            def ret = new ArrayList<SeleniumDynamicCapability>()
-            ret.add(new SeleniumDynamicCapability(sel.getSeleniumCapabilities()))
-            return ret
+            //def ret = new ArrayList<SeleniumDynamicCapability>()
+            //ret.add(new SeleniumDynamicCapability(sel.getSeleniumCapabilities()))
+            //return ret
+
+            def xxx =  new ArrayList<SeleniumDynamicCapability>()
+            xxx.add(new SeleniumDynamicCapability())
+            return xxx
+
+           // SeleniumDynamicCapability.DescriptorImpl.loadDefaultItems()
         }
 
         public FormValidation doCheckServer(@QueryParameter String value) {
