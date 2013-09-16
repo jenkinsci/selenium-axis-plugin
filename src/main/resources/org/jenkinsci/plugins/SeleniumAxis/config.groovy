@@ -14,12 +14,14 @@ namespace(lib.FormTagLib).with {
     entry(title: _("Name"), field:"name") {
         textbox( default:"label")
     }
-    entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
-        hetero_list( name:       "seleniumCapabilities",
-                     //hasHeader:  true,
-                     descriptors:descriptor.complexAxisItemTypes(),
-                     items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
-                     //addCaption: "Add Entries",
-                     //deleteCaption:"Delete")
+    block{
+        entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
+            hetero_list( name:       "seleniumCapabilities",
+                      //hasHeader:  true,
+                      descriptors:descriptor.complexAxisItemTypes(),
+                      items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
+                      //addCaption: "Add Entries",
+                      //deleteCaption:"Delete")
+        }
     }
 }

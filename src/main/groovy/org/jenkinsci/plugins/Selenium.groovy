@@ -6,14 +6,14 @@ import org.jsoup.select.Elements
 
 class Selenium {
 
-    def seleniumCapabilities = new ArrayList<SeleniumCapability>()
+    def seleniumCapabilities = new ArrayList<? extends SeleniumCapability>()
 
     def seleniumVer
     def browsers = new ArrayList<String>()
     def platforms = new ArrayList<String>()
     def versions = new ArrayList<String>()
 
-    Selenium( String url) {
+    Selenium( String url, Class<? extends SeleniumCapability> clazz ) {
         def document = Jsoup.connect("${url}/grid/console").get()
 
         def ver = document.select("h2").first()
@@ -32,7 +32,8 @@ class Selenium {
         capabilities.addAll(document.select("p > a"));
 
         for (Element capability : capabilities) {
-            SeleniumCapability n = new SeleniumCapability(capability.attr("title"))
+            //SeleniumCapability n = new SeleniumCapability(capability.attr("title"))
+            SeleniumCapability n = clazz.newInstance(capability.attr("title"))
             if (seleniumCapabilities.contains(n))
                 seleniumCapabilities.get(seleniumCapabilities.indexOf(n)).incr()
             else

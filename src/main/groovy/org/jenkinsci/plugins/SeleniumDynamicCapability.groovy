@@ -21,25 +21,16 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
 
         //so we need this to get at the name of the selenium server in the global config
         protected static Descriptor<SeleniumAxis.DescriptorImpl> getTopLevelDescriptor(){
-            //def xxx = Jenkins.getInstance().getPlugin('selenium-axis')
-
-            //def yyy=Jenkins.getInstance().getPluginManager().getPlugins()
-
-            def xxx = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
+            SeleniumAxis.DescriptorImpl xxx = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
             xxx.load()
 
             return xxx
         }
 
-        @Override
-        public static List<SeleniumCapability> loadDefaultItems(){
+        public static List<? extends SeleniumCapability> loadDefaultItems(){
             SeleniumAxis.DescriptorImpl tld = getTopLevelDescriptor()
 
-            def sel = new Selenium(tld.getServer())
-
-            //def ret = new ArrayList<SeleniumDynamicCapability>()
-            //ret.add(new SeleniumDynamicCapability(sel.getSeleniumCapabilities()))
-            //return ret
+            def sel = new Selenium(tld.getServer(), SeleniumCapabilityRO.class)
             return sel.getSeleniumCapabilities()
         }
 

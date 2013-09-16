@@ -10,6 +10,11 @@ import java.util.List;
 
 public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
+
+    public ComplexAxisDescriptor(){
+        load();
+    }
+
     public DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> > complexAxisItemTypes() {
         DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
 

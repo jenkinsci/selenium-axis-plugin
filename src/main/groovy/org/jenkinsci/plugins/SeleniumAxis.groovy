@@ -64,13 +64,16 @@ public class SeleniumAxis extends ComplexAxis{
             return server
         }
 
+        public void setServer(String server){
+            this.server = server
+        }
         //public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
         //    DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> >  xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
         //    return xxx
         //}
 
         public List<SeleniumCapability> getSeleniumCapabilities() {
-             def sel = new Selenium(server)
+             def sel = new Selenium(server, SeleniumCapability.class)
 
             return sel.seleniumCapabilities
         }
