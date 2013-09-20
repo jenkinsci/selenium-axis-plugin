@@ -15,7 +15,7 @@ public abstract class ComplexAxisItemContainer extends  ComplexAxisItem {
     }
 
     public List<? extends ComplexAxisItem> getComplexAxisItems(){
-        return Collections.unmodifiableList(complexAxisItems);
+        return complexAxisItems;
     }
 
     @Override

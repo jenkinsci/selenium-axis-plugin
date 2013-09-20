@@ -24,9 +24,12 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
+import hudson.DescriptorExtensionList
+import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
-import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.QueryParameter
+import jenkins.model.Jenkins
 
 public class SeleniumAxis extends ComplexAxis{
 
@@ -67,10 +70,13 @@ public class SeleniumAxis extends ComplexAxis{
         public void setServer(String server){
             this.server = server
         }
-        //public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
-        //    DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> >  xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
-        //    return xxx
-        //}
+
+        //@Override
+        public DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes() {
+            DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
+
+            return xxx;
+        }
 
         public List<SeleniumCapability> getSeleniumCapabilities() {
              def sel = new Selenium(server, SeleniumCapability.class)
@@ -85,17 +91,14 @@ public class SeleniumAxis extends ComplexAxis{
 
         @Override
         public List<SeleniumDynamicCapability> loadDefaultItems(){
-            //def sel = new Selenium(server)
+            def sdcl =  new ArrayList<SeleniumDynamicCapability>()
+            def sdc = new SeleniumDynamicCapability()
 
-            //def ret = new ArrayList<SeleniumDynamicCapability>()
-            //ret.add(new SeleniumDynamicCapability(sel.getSeleniumCapabilities()))
-            //return ret
+            def sel = new Selenium(getServer(), SeleniumCapabilityRO.class)
+            sel.seleniumCapabilities.each(){sdc.complexAxisItems.add(it)}
 
-            def xxx =  new ArrayList<SeleniumDynamicCapability>()
-            xxx.add(new SeleniumDynamicCapability())
-            return xxx
-
-           // SeleniumDynamicCapability.DescriptorImpl.loadDefaultItems()
+            sdcl.add(sdc)
+            return sdcl
         }
 
         public FormValidation doCheckServer(@QueryParameter String value) {

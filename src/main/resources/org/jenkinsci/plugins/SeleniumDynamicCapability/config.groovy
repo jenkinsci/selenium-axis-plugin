@@ -1,3 +1,4 @@
+package org.jenkinsci.plugins.SeleniumDynamicCapability
 /*
 This Groovy script is used to produce the global configuration option.
 
@@ -12,10 +13,21 @@ so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
     block(){
-        entry(title:_("Selenium Dynamic Capabilities"), field:"seleniumCapabilities") {
+        entry(title:_("Selenium Dynamic Capabilities")) {
             hetero_list( name:       "seleniumCapabilities",
+                hasHeader: false,
+                addCaption: false,
+                deleteCaption: false,
                 descriptors:descriptor.complexAxisItemTypes(),
-                items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
+                items:      instance?instance.getComplexAxisItems():descriptor.loadDefaultItems())
         }
     }
+    /*
+    repeatable( var="it", items: instance.complexAxisItems, noAddButton: true){
+        readOnlyTextbox( value:it.toString())
+        input(name:"_.browserName", value:it.browserName, type:"hidden")
+        input(name:"_.platformName", value:it.platformName, type:"hidden")
+        input(name:"_.browserVersion", value:it.browserVersion, type:"hidden")
+    }
+    */
 }
