@@ -6,7 +6,7 @@ import org.jsoup.select.Elements
 
 class Selenium {
 
-    def seleniumCapabilities = new ArrayList<? extends SeleniumCapability>()
+    def seleniumCapabilities = new ArrayList<SeleniumCapability>()
 
     def seleniumVer
     def browsers = new ArrayList<String>()

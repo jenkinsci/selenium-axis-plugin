@@ -15,7 +15,7 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
         load();
     }
 
-    public abstract DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes();
+    //public abstract DescriptorExtensionList<? extends ComplexAxisItem, Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes();
     //public DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> > complexAxisItemTypes() {
     //    DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
     //

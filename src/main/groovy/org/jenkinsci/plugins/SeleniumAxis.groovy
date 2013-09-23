@@ -25,11 +25,14 @@ package org.jenkinsci.plugins
 
 import hudson.Extension
 import hudson.DescriptorExtensionList
-import hudson.model.Descriptor
+//import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter
 import jenkins.model.Jenkins
+import hudson.matrix.Axis
+//import hudson.model.AbstractDescribableImpl
+import hudson.matrix.AxisDescriptor
 
 public class SeleniumAxis extends ComplexAxis{
 
@@ -72,11 +75,10 @@ public class SeleniumAxis extends ComplexAxis{
         }
 
         //@Override
-        public DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes() {
-            DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
-
-            return xxx;
+         public static DescriptorExtensionList<Axis,AxisDescriptor> complexAxisItemTypes() {
+            return Jenkins.getInstance().<Axis,AxisDescriptor>getDescriptorList(ComplexAxisItem.class);
         }
+
 
         public List<SeleniumCapability> getSeleniumCapabilities() {
              def sel = new Selenium(server, SeleniumCapability.class)
@@ -94,7 +96,7 @@ public class SeleniumAxis extends ComplexAxis{
             def sdcl =  new ArrayList<SeleniumDynamicCapability>()
             def sdc = new SeleniumDynamicCapability()
 
-            def sel = new Selenium(getServer(), SeleniumCapabilityRO.class)
+            def sel = new Selenium(getServer(), SeleniumCapability.class)
             sel.seleniumCapabilities.each(){sdc.complexAxisItems.add(it)}
 
             sdcl.add(sdc)

@@ -12,9 +12,17 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
         super(new ArrayList<SeleniumCapability>())
     }
 
+    List<SeleniumCapability> getSeleniumCapabilities(){
+        return getComplexAxisItems()
+    }
+
     @DataBoundConstructor
     SeleniumDynamicCapability(List<SeleniumCapability> seleniumCapabilities) {
         super( seleniumCapabilities)
+    }
+
+    public List<SeleniumCapability>getSeleniumCapability(){
+        return getComplexAxisItems()
     }
 
     @Extension public static class DescriptorImpl extends ComplexAxisItemContainerDescriptor {
@@ -27,10 +35,10 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
             return xxx
         }
 
-        public static List<? extends SeleniumCapability> loadDefaultItems(){
+        public static List<SeleniumCapability> loadDefaultItems(){
             SeleniumAxis.DescriptorImpl tld = getTopLevelDescriptor()
 
-            def sel = new Selenium(tld.getServer(), SeleniumCapabilityRO.class)
+            def sel = new Selenium(tld.getServer(), SeleniumCapability.class)
             return sel.getSeleniumCapabilities()
         }
 
@@ -38,8 +46,8 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
             return "Selenium Dynamic Capability";
         }
 
-        public DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes(){
+        //public DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes(){
 
-        }
+        //}
     }
 }
