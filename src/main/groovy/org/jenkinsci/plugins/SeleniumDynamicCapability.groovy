@@ -35,11 +35,24 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
             return xxx
         }
 
-        public static List<SeleniumCapability> loadDefaultItems(){
-            SeleniumAxis.DescriptorImpl tld = getTopLevelDescriptor()
 
-            def sel = new Selenium(tld.getServer(), SeleniumCapability.class)
-            return sel.getSeleniumCapabilities()
+        @Override
+        public  List<? extends ComplexAxisItem> loadDefaultItems(){
+            ArrayList<? extends ComplexAxisItem> cai
+            loadDefaultItems(cai)
+        }
+
+
+        @Override
+        public  List<? extends ComplexAxisItem> loadDefaultItems(ArrayList<? extends ComplexAxisItem> cai){
+
+            def sdc = new SeleniumDynamicCapability()
+
+            def sel = new Selenium(getTopLevelDescriptor().getServer(), SeleniumCapability.class)
+            sel.seleniumCapabilities.each(){sdc.complexAxisItems.add(it)}
+
+            cai.add(sdc)
+            cai
         }
 
         @Override public String getDisplayName() {

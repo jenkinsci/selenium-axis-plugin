@@ -67,7 +67,10 @@ public class SeleniumAxis extends ComplexAxis{
         private String server
 
         public String getServer(){
-            return server
+            if(server == null)
+                return "http://localhost:4444"
+            else
+                return server
         }
 
         public void setServer(String server){
@@ -75,7 +78,8 @@ public class SeleniumAxis extends ComplexAxis{
         }
 
         //@Override
-         public static DescriptorExtensionList<Axis,AxisDescriptor> complexAxisItemTypes() {
+        public  DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> complexAxisItemTypes(){
+        //public static DescriptorExtensionList<Axis,AxisDescriptor> complexAxisItemTypes() {
             return Jenkins.getInstance().<Axis,AxisDescriptor>getDescriptorList(ComplexAxisItem.class);
         }
 
@@ -91,17 +95,19 @@ public class SeleniumAxis extends ComplexAxis{
             return "Selenium Capability Axis"
         }
 
-        @Override
-        public List<SeleniumDynamicCapability> loadDefaultItems(){
-            def sdcl =  new ArrayList<SeleniumDynamicCapability>()
-            def sdc = new SeleniumDynamicCapability()
+        //@Override
+        //public  List<? extends ComplexAxisItem> loadDefaultItems(){
 
-            def sel = new Selenium(getServer(), SeleniumCapability.class)
-            sel.seleniumCapabilities.each(){sdc.complexAxisItems.add(it)}
+        //    DescriptorExtensionList<? extends ComplexAxisItem,? extends ComplexAxisDescriptor> cait =  complexAxisItemTypes();
 
-            sdcl.add(sdc)
-            return sdcl
-        }
+        //    def cai =  new ArrayList<? extends ComplexAxisItem>()
+
+        //    for( int i = 0; i < cait.size(); i++){
+        //         cait.get(i).loadDefaultItems(cai)
+        //    }
+
+        //    return cai
+        //}
 
         public FormValidation doCheckServer(@QueryParameter String value) {
             if (value.isEmpty()) {

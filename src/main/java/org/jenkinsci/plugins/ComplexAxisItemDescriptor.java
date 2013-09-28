@@ -2,6 +2,10 @@ package org.jenkinsci.plugins;
 
 import hudson.model.Descriptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 public abstract class ComplexAxisItemDescriptor extends Descriptor<ComplexAxisItem> {
 
@@ -10,4 +14,11 @@ public abstract class ComplexAxisItemDescriptor extends Descriptor<ComplexAxisIt
     }
 
 
+    public   List<? extends ComplexAxisItem> loadDefaultItems(){
+        return Collections.emptyList();
+    }
+
+    public   List<? extends ComplexAxisItem> loadDefaultItems(ArrayList<? extends ComplexAxisItem> cai){
+        return cai;
+    }
 }
