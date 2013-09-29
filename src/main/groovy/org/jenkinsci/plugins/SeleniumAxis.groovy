@@ -25,13 +25,11 @@ package org.jenkinsci.plugins
 
 import hudson.Extension
 import hudson.DescriptorExtensionList
-//import hudson.model.Descriptor
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter
 import jenkins.model.Jenkins
 import hudson.matrix.Axis
-//import hudson.model.AbstractDescribableImpl
 import hudson.matrix.AxisDescriptor
 
 public class SeleniumAxis extends ComplexAxis{
@@ -57,9 +55,6 @@ public class SeleniumAxis extends ComplexAxis{
        map.put(name + "_VERSION", parts[2]);
     }
 
-    //public int compareTo(SeleniumAxis that) {
-    //    return this.name.compareTo(that.name)
-    //}
 
 
     @Extension
@@ -79,7 +74,6 @@ public class SeleniumAxis extends ComplexAxis{
 
         //@Override
         public  DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> complexAxisItemTypes(){
-        //public static DescriptorExtensionList<Axis,AxisDescriptor> complexAxisItemTypes() {
             return Jenkins.getInstance().<Axis,AxisDescriptor>getDescriptorList(ComplexAxisItem.class);
         }
 
@@ -95,19 +89,6 @@ public class SeleniumAxis extends ComplexAxis{
             return "Selenium Capability Axis"
         }
 
-        //@Override
-        //public  List<? extends ComplexAxisItem> loadDefaultItems(){
-
-        //    DescriptorExtensionList<? extends ComplexAxisItem,? extends ComplexAxisDescriptor> cait =  complexAxisItemTypes();
-
-        //    def cai =  new ArrayList<? extends ComplexAxisItem>()
-
-        //    for( int i = 0; i < cait.size(); i++){
-        //         cait.get(i).loadDefaultItems(cai)
-        //    }
-
-        //    return cai
-        //}
 
         public FormValidation doCheckServer(@QueryParameter String value) {
             if (value.isEmpty()) {
@@ -123,12 +104,6 @@ public class SeleniumAxis extends ComplexAxis{
             return FormValidation.ok()
         }
 
-        //public FormValidation doCheckValues(@QueryParameter String value) {
-        //    if (value.isEmpty()) {
-        //        return FormValidation.error("You must provide a configuration.")
-        //    }
-        //    return FormValidation.ok()
-        //}
     }
 
 }

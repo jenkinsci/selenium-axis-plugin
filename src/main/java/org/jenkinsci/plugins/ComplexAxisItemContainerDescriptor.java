@@ -15,12 +15,6 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public abstract class ComplexAxisItemContainerDescriptor extends ComplexAxisItemDescriptor{
 
-    //public abstract DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes();
-    //public DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> > complexAxisItemTypes() {
-    //    DescriptorExtensionList<ComplexAxisItem,Descriptor<ComplexAxisItem> >  xxx =  Jenkins.getInstance().<ComplexAxisItem,Descriptor<ComplexAxisItem>>getDescriptorList(ComplexAxisItem.class);
-    //
-    //    return xxx;
-    //}
 
     public ComplexAxisItemContainerDescriptor () {
         load();

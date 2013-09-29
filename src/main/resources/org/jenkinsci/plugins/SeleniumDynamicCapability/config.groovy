@@ -13,6 +13,7 @@ so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
     entry{
-        repeatableProperty(field: "seleniumCapabilities", noAddButton: true)
+        repeatableProperty(field: "seleniumCapabilities", noAddButton: true, default:descriptor.loadDefaultItems())
+
     }
 }

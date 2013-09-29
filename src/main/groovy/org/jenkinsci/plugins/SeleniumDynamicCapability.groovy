@@ -13,7 +13,13 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
     }
 
     List<SeleniumCapability> getSeleniumCapabilities(){
-        return getComplexAxisItems()
+
+        //if(complexAxisItems.isEmpty()){
+        //    def sel = new Selenium(DescriptorImpl.getTopLevelDescriptor().getServer(), SeleniumCapability.class)
+        //    return sel.seleniumCapabilities
+        //}else{
+            return getComplexAxisItems()
+        //}
     }
 
     @DataBoundConstructor
@@ -21,9 +27,6 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
         super( seleniumCapabilities)
     }
 
-    public List<SeleniumCapability>getSeleniumCapability(){
-        return getComplexAxisItems()
-    }
 
     @Extension public static class DescriptorImpl extends ComplexAxisItemContainerDescriptor {
 
@@ -35,32 +38,25 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
             return xxx
         }
 
-
         @Override
-        public  List<? extends ComplexAxisItem> loadDefaultItems(){
-            ArrayList<? extends ComplexAxisItem> cai
-            loadDefaultItems(cai)
+        public   List<? extends ComplexAxisItem> loadDefaultItems(ArrayList<? extends ComplexAxisItem> cai){
+            def sdc = new SeleniumDynamicCapability(loadDefaultItems())
+
+            cai.add(sdc)
+
+            cai
         }
 
 
+
         @Override
-        public  List<? extends ComplexAxisItem> loadDefaultItems(ArrayList<? extends ComplexAxisItem> cai){
-
-            def sdc = new SeleniumDynamicCapability()
-
-            def sel = new Selenium(getTopLevelDescriptor().getServer(), SeleniumCapability.class)
-            sel.seleniumCapabilities.each(){sdc.complexAxisItems.add(it)}
-
-            cai.add(sdc)
-            cai
+        public  List<SeleniumCapability> loadDefaultItems(){
+            getTopLevelDescriptor().getSeleniumCapabilities()
         }
 
         @Override public String getDisplayName() {
             return "Selenium Dynamic Capability";
         }
 
-        //public DescriptorExtensionList<? extends ComplexAxisItem,Descriptor<? extends ComplexAxisItem> > complexAxisItemTypes(){
-
-        //}
     }
 }
