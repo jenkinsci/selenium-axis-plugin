@@ -78,8 +78,8 @@ public class SeleniumAxis extends ComplexAxis{
         }
 
 
-        public List<SeleniumCapability> getSeleniumCapabilities() {
-             def sel = new Selenium(server, SeleniumCapability.class)
+        public List<? extends SeleniumCapability> getSeleniumCapabilities() {
+             def sel = new Selenium(server, SeleniumCapabilityRO.class)
 
             return sel.seleniumCapabilities
         }

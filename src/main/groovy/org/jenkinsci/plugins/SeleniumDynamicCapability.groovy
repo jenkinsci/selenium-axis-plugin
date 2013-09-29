@@ -9,10 +9,10 @@ import jenkins.model.Jenkins
 class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
 
     SeleniumDynamicCapability() {
-        super(new ArrayList<SeleniumCapability>())
+        super(new ArrayList<SeleniumCapabilityRO>())
     }
 
-    List<SeleniumCapability> getSeleniumCapabilities(){
+    List<SeleniumCapabilityRO> getSeleniumCapabilities(){
 
         //if(complexAxisItems.isEmpty()){
         //    def sel = new Selenium(DescriptorImpl.getTopLevelDescriptor().getServer(), SeleniumCapability.class)
@@ -23,7 +23,7 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
     }
 
     @DataBoundConstructor
-    SeleniumDynamicCapability(List<SeleniumCapability> seleniumCapabilities) {
+    SeleniumDynamicCapability(List<SeleniumCapabilityRO> seleniumCapabilities) {
         super( seleniumCapabilities)
     }
 
@@ -50,7 +50,7 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
 
 
         @Override
-        public  List<SeleniumCapability> loadDefaultItems(){
+        public  List<SeleniumCapabilityRO> loadDefaultItems(){
             getTopLevelDescriptor().getSeleniumCapabilities()
         }
 
