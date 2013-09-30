@@ -14,27 +14,9 @@ class SeleniumCapabilityRO extends SeleniumCapability{
         super(titleAttr)
     }
 
-    @Override
-    String toString() {
-        super.toString()
-    }
 
-    @Override
-    public String getBrowserName(){
-        super.getBrowserName()
-    }
-
-    @Override
-    public String getPlatformName(){
-        super.getPlatformName()
-    }
-
-    @Override
-    public String getBrowserVersion(){
-        super.getBrowserVersion()
-    }
-
-    @Extension public static class DescriptorImpl extends ComplexAxisItemDescriptor {
+    @Extension
+    public static class DescriptorImpl extends ComplexAxisItemDescriptor {
 
         @Override public String getDisplayName() {
             return "Selenium Capability RO";

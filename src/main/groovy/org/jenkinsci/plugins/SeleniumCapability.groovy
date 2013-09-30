@@ -8,10 +8,10 @@ import java.util.regex.Matcher
 
 class SeleniumCapability extends  ComplexAxisItem implements Comparable {
 
-    private Integer maxInstances
-    private String browserName
-    private String platformName
-    private String browserVersion
+    protected Integer maxInstances
+    protected String browserName
+    protected String platformName
+    protected String browserVersion
 
     SeleniumCapability() {
         browserName = "Any"

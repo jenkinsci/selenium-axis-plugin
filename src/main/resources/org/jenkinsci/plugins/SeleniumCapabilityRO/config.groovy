@@ -12,18 +12,20 @@ tags they use. Views are always organized according to its owner class,
 so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
-
-    invisibleEntry(field: "platformName"){
-        textbox()
-    }
-    entry(field: "browserName"){
-        textbox()
-    }
-    entry(field: "browserVersion"){
-        textbox()
-    }
-    entry{
-        redOnlyTextbox(value=instance.toString())
+    block{
+        table{
+            tr{
+                td{
+                    readOnlyTextbox(field:"PlatformName")
+                }
+                td{
+                    readOnlyTextbox (field:"BrowserName")
+                }
+                td{
+                    readOnlyTextbox (field:"BrowserVersion")
+               }
+            }
+        }
     }
 }
 
