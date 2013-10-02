@@ -16,14 +16,14 @@ namespace(lib.FormTagLib).with {
         table{
             tr{
                 td{
-                    readOnlyTextbox(field:"PlatformName")
+                    readOnlyTextbox(field:"platformName")
                 }
                 td{
-                    readOnlyTextbox (field:"BrowserName")
+                    readOnlyTextbox (field:"browserName")
                 }
                 td{
-                    readOnlyTextbox (field:"BrowserVersion")
-               }
+                    readOnlyTextbox (field:"browserVersion")
+                }
             }
         }
     }

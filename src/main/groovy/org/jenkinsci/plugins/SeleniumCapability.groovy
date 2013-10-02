@@ -71,7 +71,7 @@ class SeleniumCapability extends  ComplexAxisItem implements Comparable {
     @Extension public static class DescriptorImpl extends ComplexAxisItemDescriptor {
 
         @Override public String getDisplayName() {
-            return "Selenium Capability";
+            return "Defined Capability";
         }
     }
 }

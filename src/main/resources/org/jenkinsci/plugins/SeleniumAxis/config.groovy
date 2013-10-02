@@ -15,8 +15,9 @@ namespace(lib.FormTagLib).with {
         textbox( default:"label")
     }
     block{
-        entry(title:_("Selenium Capabilities"), field:"seleniumCapabilities") {
+        entry(field:"seleniumCapabilities") {
             hetero_list( name:       "seleniumCapabilities",
+                      hasHeader: true,
                       descriptors:descriptor.complexAxisItemTypes(),
                       items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
         }

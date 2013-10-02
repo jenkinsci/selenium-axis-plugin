@@ -14,6 +14,6 @@ so it should be straightforward to find them.
 namespace(lib.FormTagLib).with {
     entry{
         repeatableProperty(field: "seleniumCapabilities", noAddButton: true, default:descriptor.loadDefaultItems())
-
+        description("These values will be re-evaluated during a build")
     }
 }

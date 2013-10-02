@@ -55,7 +55,7 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
         }
 
         @Override public String getDisplayName() {
-            return "Selenium Dynamic Capability";
+            return "Detected Capability";
         }
 
     }

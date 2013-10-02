@@ -39,8 +39,8 @@ public class SeleniumAxis extends ComplexAxis{
         super(name, seleniumCapabilities)
     }
 
-    public List<SeleniumCapability> getSeleniumCapabilities(){
-        return this.getComplexAxisItems() as List<SeleniumCapability>
+    public List<? extends SeleniumCapability> getSeleniumCapabilities(){
+        return this.getComplexAxisItems() as List<? extends SeleniumCapability>
     }
 
     @Override
