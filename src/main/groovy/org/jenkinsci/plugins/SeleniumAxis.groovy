@@ -24,54 +24,26 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
-import hudson.ExtensionPoint
-import hudson.Functions
-import hudson.Util
+import hudson.DescriptorExtensionList
+import org.kohsuke.stapler.DataBoundConstructor
+import hudson.util.FormValidation
+import org.kohsuke.stapler.QueryParameter
+import jenkins.model.Jenkins
 import hudson.matrix.Axis
 import hudson.matrix.AxisDescriptor
-import hudson.model.Descriptor
-import hudson.matrix.LabelAxis
-import net.sf.json.JSONObject
-import org.kohsuke.stapler.DataBoundConstructor
-import org.kohsuke.stapler.StaplerRequest
-import hudson.model.Descriptor.FormException
-import hudson.util.FormValidation
-import org.kohsuke.stapler.QueryParameter;
-import hudson.model.AbstractDescribableImpl
-import hudson.util.ListBoxModel
-import hudson.DescriptorExtensionList
-import jenkins.model.Jenkins
 
-public class SeleniumAxis extends Axis{
-
-    public final List<SeleniumCapability> seleniumCapabilities
-
-    public SeleniumAxis(String name, String value){
-        super(name, value)
-    }
+public class SeleniumAxis extends ComplexAxis{
 
     @DataBoundConstructor
-    public SeleniumAxis(String name, List<SeleniumCapability> seleniumCapabilities){
-        super(name, SeleniumAxis.convertToAxisValue(seleniumCapabilities))
-        this.seleniumCapabilities = seleniumCapabilities
+    public SeleniumAxis(String name, List<? extends ComplexAxisItem> seleniumCapabilities){
+        super(name, seleniumCapabilities)
     }
 
-    public static String convertToAxisValue(List<SeleniumCapability> seleniumCapabilities){
-        def ret = new StringBuilder()
-
-        seleniumCapabilities.each(){ret.append(it.toString()).append(' ')}
-
-        return ret.toString()
+    public List<? extends SeleniumCapability> getSeleniumCapabilities(){
+        return this.getComplexAxisItems() as List<? extends SeleniumCapability>
     }
 
-    public List<SeleniumCapability> getSeleniumCapabilities(){
-        return Collections.unmodifiableList(seleniumCapabilities)
-    }
-
-    public boolean isSystem() {
-        return true;
-    }
-
+    @Override
     public void addBuildVariable(String value, Map<String,String> map) {
 
        //so the value is PLATFORM-BROWSER-VERSION
@@ -83,54 +55,33 @@ public class SeleniumAxis extends Axis{
        map.put(name + "_VERSION", parts[2]);
     }
 
-    //public Iterator<String> iterator() {
-    //    return getValues().iterator();
-    //}
-
-    //public int size() {
-    //    return getValues().size();
-    //}
-
-    //public String value(int index) {
-    //    return getValues().get(index);
-    //}
-
-    public int compareTo(SeleniumAxis that) {
-        return this.name.compareTo(that.name)
-    }
 
 
     @Extension
-    public static class DescriptorImpl extends AxisDescriptor{
-        public String server
+    public static class DescriptorImpl extends ComplexAxisDescriptor{
+        private String server
 
-        public DescriptorImpl() {
-            load()
+        public String getServer(){
+            if(server == null)
+                return "http://localhost:4444"
+            else
+                return server
         }
 
-        public DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> > seleniumCapabilities() {
-            //def xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
-            DescriptorExtensionList<SeleniumCapability,Descriptor<SeleniumCapability> >  xxx =  Jenkins.getInstance().<SeleniumCapability,Descriptor<SeleniumCapability>>getDescriptorList(SeleniumCapability.class);
-
-            def jjj = SeleniumCapability.class
-
-            return xxx
+        public void setServer(String server){
+            this.server = server
         }
 
-        public List<SeleniumCapability> getSeleniumCapabilities() {
-             def sel = new Selenium(server)
+        //@Override
+        public  DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> complexAxisItemTypes(){
+            return Jenkins.getInstance().<Axis,AxisDescriptor>getDescriptorList(ComplexAxisItem.class);
+        }
+
+
+        public List<? extends SeleniumCapability> getSeleniumCapabilities() {
+             def sel = new Selenium(server, SeleniumCapabilityRO.class)
 
             return sel.seleniumCapabilities
-        }
-
-
-        @Override
-        public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            // To persist global configuration information,
-            // set that to properties and call save().
-            req.bindJSON(this, formData)
-            save()
-            return true
         }
 
         @Override
@@ -138,20 +89,6 @@ public class SeleniumAxis extends Axis{
             return "Selenium Capability Axis"
         }
 
-        @Override
-        public boolean isInstantiable() {
-            return true
-        }
-
-        private String jsstr(String body, Object... args) {
-            return '\"' + Functions.jsStringEscape(String.format(body, args)) + '\"';
-        }
-
-        public String buildLabelCheckBox(SeleniumCapability sc, LabelAxis instance) {
-            return jsstr("<input type='checkbox' name='values' json='%s' /><label class='attach-previous'>%s</label>",
-                    Functions.htmlAttributeEscape(sc.toString()),
-                    sc.toString())
-        }
 
         public FormValidation doCheckServer(@QueryParameter String value) {
             if (value.isEmpty()) {
@@ -167,12 +104,6 @@ public class SeleniumAxis extends Axis{
             return FormValidation.ok()
         }
 
-        public FormValidation doCheckValues(@QueryParameter String value) {
-            if (value.isEmpty()) {
-                return FormValidation.error("You must provide a configuration.")
-            }
-            return FormValidation.ok()
-        }
     }
 
 }

@@ -1,3 +1,4 @@
+package org.jenkinsci.plugins.SeleniumDynamicCapability
 /*
 This Groovy script is used to produce the global configuration option.
 
@@ -11,15 +12,8 @@ tags they use. Views are always organized according to its owner class,
 so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
-    entry(title: _("Name"), field:"name") {
-        textbox( default:"label")
-    }
-    block{
-        entry(field:"seleniumCapabilities") {
-            hetero_list( name:       "seleniumCapabilities",
-                      hasHeader: true,
-                      descriptors:descriptor.complexAxisItemTypes(),
-                      items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
-        }
+    entry{
+        repeatableProperty(field: "seleniumCapabilities", noAddButton: true, default:descriptor.loadDefaultItems())
+        description("These values will be re-evaluated during a build")
     }
 }
