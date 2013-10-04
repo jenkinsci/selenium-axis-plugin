@@ -1,10 +1,12 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
+import hudson.util.FormValidation
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.model.Descriptor
 import hudson.DescriptorExtensionList
 import jenkins.model.Jenkins
+import org.kohsuke.stapler.QueryParameter
 
 class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
 
@@ -13,13 +15,11 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
     }
 
     List<SeleniumCapabilityRO> getSeleniumCapabilities(){
+        return getComplexAxisItems()
+    }
 
-        //if(complexAxisItems.isEmpty()){
-        //    def sel = new Selenium(DescriptorImpl.getTopLevelDescriptor().getServer(), SeleniumCapability.class)
-        //    return sel.seleniumCapabilities
-        //}else{
-            return getComplexAxisItems()
-        //}
+    void setSeleniumCapabilities(List<SeleniumCapabilityRO> sc){
+        setComplexAxisItems(sc)
     }
 
     @DataBoundConstructor
@@ -27,15 +27,39 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
         super( seleniumCapabilities)
     }
 
+    String toString(){
+        "DetectedSelenium"
+    }
+
+    @Override
+    public List<String> rebuild(List<String> list){
+        SeleniumDynamicCapability.DescriptorImpl sdcd = Jenkins.getInstance().getDescriptor(SeleniumDynamicCapability.class)
+
+        List<SeleniumCapabilityRO> sc = sdcd.loadDefaultItems()
+
+        if (sc.size() == 0)
+            throw(new SeleniumException("No selenium capabilities detected"))
+
+        setSeleniumCapabilities(sc)
+
+        sc.each{list.add(it.toString())}
+        return list;
+    }
+
+    @Override
+    public List<String> getValues(List<String> list){
+        getSeleniumCapabilities().each{list.add(it.toString())}
+        return list;
+    }
 
     @Extension public static class DescriptorImpl extends ComplexAxisItemContainerDescriptor {
 
         //so we need this to get at the name of the selenium server in the global config
         protected static Descriptor<? extends ComplexAxisDescriptor> getTopLevelDescriptor(){
-            SeleniumAxis.DescriptorImpl xxx = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
-            xxx.load()
+            SeleniumAxis.DescriptorImpl sad = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
+            sad.load()
 
-            return xxx
+            return sad
         }
 
         @Override
@@ -46,8 +70,6 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
 
             cai
         }
-
-
 
         @Override
         public  List<SeleniumCapabilityRO> loadDefaultItems(){

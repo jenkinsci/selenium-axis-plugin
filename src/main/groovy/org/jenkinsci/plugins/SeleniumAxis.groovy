@@ -79,9 +79,13 @@ public class SeleniumAxis extends ComplexAxis{
 
 
         public List<? extends SeleniumCapability> getSeleniumCapabilities() {
-             def sel = new Selenium(server, SeleniumCapabilityRO.class)
+            try{
+                def sel = new Selenium(getServer(), SeleniumCapabilityRO.class)
 
-            return sel.seleniumCapabilities
+                sel.seleniumCapabilities
+            }catch(ex){
+                ComplexAxisItem.emptyList()
+            }
         }
 
         @Override

@@ -11,11 +11,22 @@ public abstract class ComplexAxisItemContainer extends  ComplexAxisItem {
     private List<? extends ComplexAxisItem> complexAxisItems;
 
     ComplexAxisItemContainer(List<? extends ComplexAxisItem> complexAxisItems) {
-        this.complexAxisItems = complexAxisItems;
+
+        if(complexAxisItems == null)
+            this.complexAxisItems = emptyList();
+        else
+            this.complexAxisItems = complexAxisItems;
     }
 
     public List<? extends ComplexAxisItem> getComplexAxisItems(){
-        return complexAxisItems;
+        if(complexAxisItems == null)
+            return emptyList();
+        else
+            return complexAxisItems;
+    }
+
+    public void setComplexAxisItems(List<? extends ComplexAxisItem> cai){
+        complexAxisItems = complexAxisItems;
     }
 
     @Override

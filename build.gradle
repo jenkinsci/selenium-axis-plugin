@@ -28,11 +28,11 @@ dependencies {
 }
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.3-SNAPSHOT'
 description = 'Axis for current capabilities of a selenium Server'
 
 jenkinsPlugin {
-    coreVersion = '1.420'
+    coreVersion = '1.533'
     displayName = 'Selenium Capability Axis'
     url = 'https://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
     gitHubUrl = 'https://github.com/jenkinsci/some-plugin'
