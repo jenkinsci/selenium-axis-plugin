@@ -32,6 +32,7 @@ import jenkins.model.Jenkins
 import hudson.matrix.Axis
 import hudson.matrix.AxisDescriptor
 
+
 public class SeleniumAxis extends ComplexAxis{
 
     @DataBoundConstructor
@@ -72,11 +73,21 @@ public class SeleniumAxis extends ComplexAxis{
             this.server = server
         }
 
-        //@Override
-        public  DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> complexAxisItemTypes(){
-            return Jenkins.getInstance().<Axis,AxisDescriptor>getDescriptorList(ComplexAxisItem.class);
-        }
+        public  List<ComplexAxisItemDescriptor> complexAxisItemTypes(){
+            def cait = Jenkins.getInstance().<ComplexAxisItem,ComplexAxisItemDescriptor>getDescriptorList(ComplexAxisItem.class)
 
+            def ret = new ArrayList<ComplexAxisItemDescriptor>()
+
+            for( int i = 0; i < cait.size(); i++) {
+                def name = cait.get(i).getClass().getName()
+
+                //don't want the RO version to appear in the add list as it is added as part of the Dynamic item
+                if (!name.contains("SeleniumCapabilityRO"))
+                    ret.add(cait.get(i))
+
+            }
+            return ret
+        }
 
         public List<? extends SeleniumCapability> getSeleniumCapabilities() {
             try{

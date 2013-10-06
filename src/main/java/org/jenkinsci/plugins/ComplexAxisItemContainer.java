@@ -26,7 +26,7 @@ public abstract class ComplexAxisItemContainer extends  ComplexAxisItem {
     }
 
     public void setComplexAxisItems(List<? extends ComplexAxisItem> cai){
-        complexAxisItems = complexAxisItems;
+        complexAxisItems = cai;
     }
 
     @Override

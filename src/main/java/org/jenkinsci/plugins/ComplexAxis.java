@@ -70,8 +70,6 @@ public abstract class ComplexAxis extends Axis{
         for( int i = 0; i < complexAxisItems.size(); i++){
             complexAxisItems.get(i).getValues(ret);
         }
-
         return ret;
-
     }
 }

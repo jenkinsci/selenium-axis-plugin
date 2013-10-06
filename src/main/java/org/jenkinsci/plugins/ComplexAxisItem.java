@@ -35,5 +35,4 @@ public abstract class ComplexAxisItem extends AbstractDescribableImpl<ComplexAxi
         list.add(toString());
         return list;
     }
-
 }

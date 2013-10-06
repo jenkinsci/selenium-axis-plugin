@@ -9,10 +9,12 @@ import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import hudson.ExtensionList;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class ComplexAxisDescriptor extends AxisDescriptor {
@@ -38,11 +40,11 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
         return true;
     }
 
-    public abstract DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> complexAxisItemTypes();
+    public abstract List<ComplexAxisItemDescriptor> complexAxisItemTypes();
 
     public  List<? extends ComplexAxisItem> loadDefaultItems(){
 
-        DescriptorExtensionList<ComplexAxisItem,ComplexAxisItemDescriptor> cait =  complexAxisItemTypes();
+        List<ComplexAxisItemDescriptor> cait =  complexAxisItemTypes();
 
         ArrayList<ComplexAxisItem> cai =  new ArrayList<ComplexAxisItem>();
 
@@ -52,6 +54,7 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
 
         return cai;
     }
+
     @Override
     public String getDisplayName() {
         return "Complex Axis";
@@ -66,7 +69,6 @@ public abstract class ComplexAxisDescriptor extends AxisDescriptor {
         if (value.isEmpty()) {
             return FormValidation.error("You must provide a Name");
         }
-
         return FormValidation.ok();
     }
 }
