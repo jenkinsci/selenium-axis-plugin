@@ -1,10 +1,10 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven {
             name 'jenkins'
             delegate.url('http://maven.jenkins-ci.org/content/repositories/releases/')
         }
-        mavenCentral()
     }
     dependencies {
         classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.4.0'
@@ -12,7 +12,6 @@ buildscript {
 }
 
 apply plugin: 'jpi'
-apply plugin: 'java'
 apply plugin: 'idea'
 
 repositories {
@@ -22,20 +21,27 @@ repositories {
 dependencies {
     compile 'org.jsoup:jsoup:1.7.2'
     groovy 'org.codehaus.groovy:groovy-all:1.8.6'
-    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
-    jenkinsTest 'org.jenkins-ci.plugins:ant:1.1@jar',
+    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'//,
+    jenkinsTest 'org.jenkins-ci.plugins:ant:1.1',
                 'org.jenkins-ci.plugins:javadoc:1.0@jar'
 }
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
 description = 'Axis for current capabilities of a selenium Server'
 
 jenkinsPlugin {
     coreVersion = '1.533'
     displayName = 'Selenium Capability Axis'
-    url = 'https://wiki.jenkins-ci.org/display/JENKINS/SomePluginPage'
-    gitHubUrl = 'https://github.com/jenkinsci/some-plugin'
+    url = 'https://wiki.jenkins-ci.org/display/JENKINS/Selenium+Axis+Plugin'
+    gitHubUrl = 'https://github.com/jenkinsci/selenium-axis-plugin'
+    developers {
+        developer {
+            id 'jeremym'
+            name 'Jeremy Marshall'
+            email 'jeremystuartmarshall@gmail.com'
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
