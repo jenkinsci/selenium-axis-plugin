@@ -17,9 +17,15 @@ class SeleniumAxisSpec extends Specification {
 
         def sel = new Selenium(Selenium.loadStream(this.class.getResourceAsStream("/grid-2.35.0.html")), SeleniumCapabilityRO.class)
         def selCap = new SeleniumDynamicCapability(sel.getSeleniumCapabilities())
+        def sdca = new ArrayList<ComplexAxisItem>()
+        sdca.add(selCap)
+
 
         def axis = new SeleniumAxis('TEST', sel.getSeleniumCapabilities())
         matrixProject.axes.add(axis)
+
+        def axis2 = new SeleniumAxis('TEST2', sdca)
+        matrixProject.axes.add(axis2)
 
         when:
         def build = matrixProject.scheduleBuild2(0).get()
