@@ -71,6 +71,17 @@ class Selenium {
         }
     }
 
+    static Document load(String uri) throws SeleniumException{
+        if(uri.startsWith('http://')){
+            Selenium.loadURL(uri)
+        //these are for testing so we don't need to fire up a selenium grid
+        }else if( uri.startsWith('null://')){
+            throw new SeleniumException('null uri passed')
+        }else{
+            Selenium.loadStream(this.class.getResourceAsStream(uri))
+        }
+    }
+
     //@Override
     void dump() {
         println seleniumVer

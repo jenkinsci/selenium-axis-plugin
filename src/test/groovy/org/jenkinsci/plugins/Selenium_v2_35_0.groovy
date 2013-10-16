@@ -4,7 +4,7 @@ import org.junit.Rule
 import spock.lang.Specification
 
 class Selenium_v2_35_0 extends Specification{
-    def sel = new Selenium(Selenium.loadStream(this.class.getResourceAsStream("/grid-2.35.0.html")), SeleniumCapability.class)
+    def sel = new Selenium(Selenium.load("/grid-2.35.0.html"), SeleniumCapability.class)
 
     def 'count'() {
         expect: sel.seleniumCapabilities.size() == 4

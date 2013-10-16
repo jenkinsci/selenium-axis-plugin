@@ -15,11 +15,12 @@ class SeleniumAxisSpec extends Specification {
         given:
         def matrixProject = rule.createMatrixProject()
 
-        def sel = new Selenium(Selenium.loadStream(this.class.getResourceAsStream("/grid-2.35.0.html")), SeleniumCapabilityRO.class)
+        def sel = new Selenium(Selenium.load("/grid-2.35.0.html"), SeleniumCapabilityRO.class)
         def selCap = new SeleniumDynamicCapability(sel.getSeleniumCapabilities())
         def sdca = new ArrayList<ComplexAxisItem>()
-        sdca.add(selCap)
 
+        sdca.add(selCap)
+        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.35.0.html")
 
         def axis = new SeleniumAxis('TEST', sel.getSeleniumCapabilities())
         matrixProject.axes.add(axis)
