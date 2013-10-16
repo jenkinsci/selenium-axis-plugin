@@ -91,7 +91,7 @@ public class SeleniumAxis extends ComplexAxis{
 
         public List<? extends SeleniumCapability> getSeleniumCapabilities() {
             try{
-                def sel = new Selenium(getServer(), SeleniumCapabilityRO.class)
+                def sel = new Selenium(Selenium.loadURL(getServer()), SeleniumCapabilityRO.class)
 
                 sel.seleniumCapabilities
             }catch(ex){
