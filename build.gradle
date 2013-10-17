@@ -14,6 +14,14 @@ buildscript {
 }
 apply plugin: 'jpi'
 apply plugin: 'idea'
+//do ./gradlew jacocoTestReport
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+}
 
 repositories {
     mavenCentral()
