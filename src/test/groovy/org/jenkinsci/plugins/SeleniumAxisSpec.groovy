@@ -11,7 +11,8 @@ class SeleniumAxisSpec extends Specification {
     JenkinsRule rule = new JenkinsRule()
 
     def sel = new Selenium(Selenium.load("/grid-2.35.0.html"), SeleniumCapabilityRO.class)
-    def selCap = new SeleniumDynamicCapability(sel.getSeleniumCapabilities())
+    //def selCap = new SeleniumDynamicCapability(sel.getSeleniumCapabilities())
+    def selCap = new SeleniumDynamicCapability()
     def sdca = new ArrayList<ComplexAxisItem>()
 
     def 'Dynamic Add'() {
@@ -24,16 +25,61 @@ class SeleniumAxisSpec extends Specification {
         def axis = new SeleniumAxis('TEST', sdca)
         matrixProject.axes.add(axis)
 
-        when:
         def build = matrixProject.scheduleBuild2(0).get()
-        then:
-        build.logFile.text.contains("Hello, kiy0taka!")
+
+
+        expect: build.logFile.text.contains("Hello, kiy0taka!")
 
         when:
-        def runs = matrixProject.scheduleBuild2(0).get().getRuns()
+        def runs = build.getRuns()
         then:
-        runs.each(){it.logFile.text.contains("Hello, kiy0taka!")}
+        runs.each(){assert it.logFile.text.contains("Hello, kiy0taka!")}
      
+    }
+
+    def 'Dynamic Add Grid Gone'() {
+        given:
+
+        def matrixProject = rule.createMatrixProject()
+        sdca.add(selCap)
+        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.35.0.html")
+
+        def axis = new SeleniumAxis('TEST', sdca)
+        matrixProject.axes.add(axis)
+
+        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("null://")
+        def build = matrixProject.scheduleBuild2(0).get()
+
+        expect: build.logFile.text.contains("Hello, kiy0taka!")
+
+        when:
+        def runs = build.getRuns()
+        then:
+        runs.each(){assert it.logFile.text.contains("Hello, kiy0taka!")}
+     
+    }
+
+    def 'Dynamic Add Grid Arrived'() {
+        given:
+
+        def matrixProject = rule.createMatrixProject()
+        sdca.add(selCap)
+        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/empty-grid-2.35.0.html")
+
+        def axis = new SeleniumAxis('TEST', sdca)
+        matrixProject.axes.add(axis)
+
+        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.25.0.html")
+
+        def build = matrixProject.scheduleBuild2(0).get()
+
+        expect: build.logFile.text.contains("Hello, kiy0taka!")
+
+        when:
+        def runs = build.getRuns()
+        then:
+        runs.each(){assert it.logFile.text.contains("Hello, kiy0taka!")}
+
     }
 
     def 'matrix'() {
@@ -47,51 +93,9 @@ class SeleniumAxisSpec extends Specification {
         expect: b.logFile.text.contains("SUCCESS")
 
         b.getRuns().each(){
-            assert it.logFile.text.contains("TEST/1")
+            assert it.logFile.text.contains("SUCCESS")
         }
     }
-
-    def 'matrix2'() {
-        given:
-        def matrixProject = rule.createMatrixProject()
-        def axis = new TextAxis('TEST', "1", "2", "3")
-        matrixProject.axes.add(axis)
-
-        expect:
-        matrixProject.scheduleBuild2(0).get().getRuns().each(){
-            //logFile.text.contains("Some String!")
-            //runs.every { it.logFile.text.contains("Another String") }
-            assert it.logFile.text.contains("TEST/1")
-        }
-    }
-
-    def 'matrix3'() {
-        given:
-        def matrixProject = rule.createMatrixProject()
-        def axis = new TextAxis('TEST', "1", "2", "3")
-        matrixProject.axes.add(axis)
-
-        expect:
-        matrixProject.scheduleBuild2(0).get().with(){
-            logFile.text.contains("Some String!")
-            getRuns().each() { assert it.logFile.text.contains("TEST/1") }
-        }
-    }
-
-    def 'matrix4'() {
-        given:
-        def matrixProject = rule.createMatrixProject()
-        def axis = new TextAxis('TEST', "1", "2", "3")
-        matrixProject.axes.add(axis)
-
-        expect:
-        with({ matrixProject.scheduleBuild2(0).get()}){
-            logFile.text.contains("Some String!")
-            it.getRuns().each() { assert it.logFile.text.contains("TEST/1") }
-        }
-    }
-
-
 }
 
 

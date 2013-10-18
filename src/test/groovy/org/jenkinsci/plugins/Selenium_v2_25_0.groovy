@@ -4,17 +4,14 @@ import spock.lang.*
 import org.junit.Rule
 
 class Selenium_v2_25_0 extends Specification{
-    def sel = new Selenium(Selenium.load("/grid-2.25.0.html"), SeleniumCapabilityRO.class)
 
-    def 'count'() {
-        expect: sel.seleniumCapabilities.size() == 5
-    }
+    def 'Tests'() {
+        when:
+        def sel = new Selenium(Selenium.load("/grid-2.25.0.html"), SeleniumCapabilityRO.class)
 
-    def 'version'(){
-        expect: sel.getSeleniumVer().matches('Grid Hub 2.25.0')
-    }
-
-    def 'items'(){
-        expect: sel.getSeleniumCapabilities().toString() == '[Any-phantomjs-Any, MAC-chrome-Any, MAC-firefox-14, MAC-opera-Any, MAC-safari-Any]'
+        then:
+        assert sel.seleniumCapabilities.size() == 5
+        assert sel.getSeleniumVer().matches('Grid Hub 2.25.0')
+        assert sel.getSeleniumCapabilities().toString() == '[Any-phantomjs-Any, MAC-chrome-Any, MAC-firefox-14, MAC-opera-Any, MAC-safari-Any]'
     }
 }
