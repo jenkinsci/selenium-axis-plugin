@@ -10,22 +10,16 @@ buildscript {
     }
     dependencies {
         classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.5.0'
+        classpath 'net.saliman:gradle-cobertura-plugin:2.0.0'
     }
 }
 apply plugin: 'jpi'
 apply plugin: 'idea'
-//do ./gradlew jacoco
-apply plugin: 'jacoco'
+apply plugin: 'cobertura'
 
-jacoco {
-    //toolVersion = "0.6.2.201302030002"
-    reportsDir = file("$buildDir/customJacocoReportDir")
-}
-
-test{
-  jacoco{
-    append = false
- }
+cobertura{
+  coverageSourceDirs = [project.sourceSets.main.java.srcDirs, 
+                        project.sourceSets.main.groovy.srcDirs]  
 }
 
 repositories {
