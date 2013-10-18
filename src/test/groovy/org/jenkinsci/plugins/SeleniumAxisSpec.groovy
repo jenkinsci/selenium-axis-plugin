@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins
 
 import hudson.matrix.TextAxis
+import jenkins.model.Jenkins
 import spock.lang.*
 import org.junit.Rule
 import org.jvnet.hudson.test.JenkinsRule
@@ -10,23 +11,42 @@ class SeleniumAxisSpec extends Specification {
     @Rule
     JenkinsRule rule = new JenkinsRule()
 
-    def sel = new Selenium(Selenium.load("/grid-2.35.0.html"), SeleniumCapabilityRO.class)
-    //def selCap = new SeleniumDynamicCapability(sel.getSeleniumCapabilities())
-    def selCap = new SeleniumDynamicCapability()
-    def sdca = new ArrayList<ComplexAxisItem>()
 
-    def 'Dynamic Add'() {
+    def 'Dynamic'() {
         given:
 
         def matrixProject = rule.createMatrixProject()
-        sdca.add(selCap)
-        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.35.0.html")
+        def sad = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
 
-        def axis = new SeleniumAxis('TEST', sdca)
+        sad.setServer("/grid-2.35.0.html")
+
+        def axis = new SeleniumAxis('TEST', sad.loadDefaultItems())
         matrixProject.axes.add(axis)
 
         def build = matrixProject.scheduleBuild2(0).get()
 
+        expect: build.logFile.text.contains("SUCCESS")
+
+        when:
+        def runs = build.getRuns()
+        then:
+        runs.each(){assert it.logFile.text.contains("SUCCESS")}
+     
+    }
+
+    def 'Dynamic Grid Gone'() {
+        given:
+        def sad = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
+
+        def matrixProject = rule.createMatrixProject()
+
+        sad.setServer("/grid-2.35.0.html")
+
+        def axis = new SeleniumAxis('TEST', sad.loadDefaultItems())
+        matrixProject.axes.add(axis)
+
+        sad.setServer("null://")
+        def build = matrixProject.scheduleBuild2(0).get()
 
         expect: build.logFile.text.contains("Hello, kiy0taka!")
 
@@ -37,17 +57,19 @@ class SeleniumAxisSpec extends Specification {
      
     }
 
-    def 'Dynamic Add Grid Gone'() {
+    def 'Dynamic Grid Arrived'() {
         given:
 
+        def sad = Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
         def matrixProject = rule.createMatrixProject()
-        sdca.add(selCap)
-        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.35.0.html")
 
-        def axis = new SeleniumAxis('TEST', sdca)
+        sad.setServer("/empty-grid-2.35.0.html")
+
+        def axis = new SeleniumAxis('TEST', sad.loadDefaultItems())
         matrixProject.axes.add(axis)
 
-        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("null://")
+        sad.setServer("/grid-2.25.0.html")
+
         def build = matrixProject.scheduleBuild2(0).get()
 
         expect: build.logFile.text.contains("Hello, kiy0taka!")
@@ -56,20 +78,16 @@ class SeleniumAxisSpec extends Specification {
         def runs = build.getRuns()
         then:
         runs.each(){assert it.logFile.text.contains("Hello, kiy0taka!")}
-     
+
     }
 
-    def 'Dynamic Add Grid Arrived'() {
+    def 'Empty Axis'() {
         given:
 
         def matrixProject = rule.createMatrixProject()
-        sdca.add(selCap)
-        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/empty-grid-2.35.0.html")
 
-        def axis = new SeleniumAxis('TEST', sdca)
+        def axis = new SeleniumAxis('TEST', null)
         matrixProject.axes.add(axis)
-
-        SeleniumDynamicCapability.DescriptorImpl.getTopLevelDescriptor().setServer("/grid-2.25.0.html")
 
         def build = matrixProject.scheduleBuild2(0).get()
 
@@ -79,7 +97,6 @@ class SeleniumAxisSpec extends Specification {
         def runs = build.getRuns()
         then:
         runs.each(){assert it.logFile.text.contains("Hello, kiy0taka!")}
-
     }
 
     def 'matrix'() {
