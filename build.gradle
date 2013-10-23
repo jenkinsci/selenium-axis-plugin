@@ -20,6 +20,7 @@ apply plugin: 'cobertura'
 cobertura{
   coverageSourceDirs = [project.sourceSets.main.java.srcDirs, 
                         project.sourceSets.main.groovy.srcDirs]  
+  coverageIgnoreTrivial = true
 }
 
 repositories {
