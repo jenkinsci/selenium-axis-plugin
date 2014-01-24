@@ -49,6 +49,10 @@ class SeleniumDynamicCapability extends  ComplexAxisItemContainer {
     @Override
     public List<String> getValues(List<String> list){
         getSeleniumCapabilities().each{list.add(it.toString())}
+
+        if (list.size() == 0)
+            list.add('Rebuilt at build time')
+
         return list;
     }
 
