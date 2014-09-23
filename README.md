@@ -30,9 +30,11 @@ ok $ENV{TEST_URL}, "URL set";
 
 my $browser  = $ENV{TEST_BROWSER};
 my $platform = $ENV{TEST_PLATFORM};
-my $version = $ENV{TEST_VERSION};
-my $url = $ENV{TEST_URL};
+my $version  = $ENV{TEST_VERSION};
+my $url      = $ENV{TEST_URL};
 
+#so perl likes the selenium url not to have http:// on the front
+#for SauceLabs this will be user:password@ which is set in the global config
 $url =~ s|^http://||;
 
 my $parms = [remote_server_addr=>$url ];
@@ -54,25 +56,10 @@ $driver->quit();
 
 ```
 
-TODO
+For Selenium it will detect the capabilities and display them.
+For SauceLabs it will pick some at random from the available.
+Both will be rebuilt ar build time so new capabilities are incorporated without revisiting the project.
 
-<ul>
-<li><del>It is not happy if you don't select a configuration.</del></li>
+I would advise using the <a href='https://wiki.jenkins-ci.org/display/JENKINS/Mask+Passwords+Plugin'>Mask Password Plugin</a> to mask passwords in the console log.
 
-
-<li><del>Probably should use an Any-Any-Any configuration</del></li>
-
-
-<li><del>Create a second axis to use whatever Selenium capabilities are available when a build starts</del></li>
-
-
-<li><del>Convert the config.jelly to config.groovy</del></li>
-
-
-<li><del>Write some tests</del></li>
-
-
-<li><del>Submit it to Jenkins</del></li>
-
-</ul>
-
+You will need a SauceLabs account to use the SauceLabs part. If you don't want this then you can turn it off in the global config.
