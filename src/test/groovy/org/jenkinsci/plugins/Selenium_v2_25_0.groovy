@@ -1,17 +1,25 @@
 package org.jenkinsci.plugins
 
-import spock.lang.*
-import org.junit.Rule
+import org.jsoup.Jsoup
+import spock.lang.Specification
 
-class Selenium_v2_25_0 extends Specification{
+class Selenium_v2_25_0 extends Specification {
 
     def 'Tests'() {
+
+        SeleniumHubCapabilityReader.metaClass.rawRead = {
+            String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
+        }
+
         when:
-        def sel = new Selenium(Selenium.load("/grid-2.25.0.html"), SeleniumCapabilityRO.class)
+        def reader = new SeleniumHubCapabilityReader()
+        reader.loadCapabilities('/grid-2.25.0.html')
+        def sel = new Selenium(reader, SeleniumCapabilityRO)
 
         then:
         assert sel.seleniumCapabilities.size() == 5
-        assert sel.getSeleniumVer().matches('Grid Hub 2.25.0')
-        assert sel.getSeleniumCapabilities().toString() == '[Any-phantomjs-Any, MAC-chrome-Any, MAC-firefox-14, MAC-opera-Any, MAC-safari-Any]'
+        //assert sel.seleniumVer.matches('Grid Hub 2.25.0')
+        assert sel.seleniumCapabilities.toString() ==
+                'SEL-Any-phantomjs-Any\nSEL-MAC-chrome-Any\nSEL-MAC-firefox-14\nSEL-MAC-opera-Any\nSEL-MAC-safari-Any\n'
     }
 }

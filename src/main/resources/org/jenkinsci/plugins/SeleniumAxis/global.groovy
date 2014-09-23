@@ -12,8 +12,23 @@
  */
 namespace(lib.FormTagLib).with {
     section(title:'Selenium Axis') {
-        entry(title:'Selenium Grid Server', field:'server', description:'The URL of the Selenium Server to Use') {
-            textbox( default:"http://localhost:4444")
+        entry(title: 'Selenium Grid Server', field: 'server', description: 'The URL of the Selenium Server to Use') {
+            textbox()
+        }
+        optionalBlock(field:"sauceLabs", inline:true, title: 'Use Sauce Labs') {
+            entry(title: 'SauceLabs API', field: 'sauceLabsAPIURL', description: 'URL to retrieve SauceLabs capabilities') {
+                textbox()
+            }
+            entry(title: 'Username', field: 'sauceLabsName', description: 'Username in SauceLabs') {
+                textbox()
+            }
+            entry(title: 'Password', field: 'sauceLabsPwd', description: 'Password in SauceLabs') {
+                password()
+            }
+            entry(title: 'SauceLabs On Demand URL', field: 'sauceLabsURL', description: 'URL of SauceLabs Selenium Server') {
+                textbox()
+            }
+
         }
     }
 }

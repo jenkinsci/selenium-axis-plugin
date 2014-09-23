@@ -1,0 +1,31 @@
+[
+    {
+        "short_version": "11",
+        "long_name": "Internet Explorer",
+        "api_name": "internet explorer",
+        "long_version": "11.0.9600.16384.",
+        "latest_stable_version": "",
+        "automation_backend": "webdriver",
+        "os": "Windows 2012 R2"
+    },
+    {
+        "short_version": "9",
+        "long_name": "Firefox",
+        "api_name": "firefox",
+        "long_version": "9.0.1.",
+        "latest_stable_version": "",
+        "automation_backend": "webdriver",
+        "os": "Windows 2012 R2"
+    },
+    {
+        "short_version": "4.3",
+        "long_name": "iPad",
+        "api_name": "ipad",
+        "long_version": "4.3.",
+        "device": "ipad",
+        "latest_stable_version": "",
+        "automation_backend": "webdriver",
+        "os": "Mac 10.6"
+    }
+
+]

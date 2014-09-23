@@ -16,6 +16,16 @@ buildscript {
 apply plugin: 'jpi'
 apply plugin: 'idea'
 apply plugin: 'cobertura'
+apply plugin: 'codenarc'
+
+codenarc {
+    toolVersion = '0.21'
+    configFile = file('config/codenarc/rules.groovy')
+}
+
+codenarcTest {
+    configFile = file('config/codenarc/rules-test.groovy')
+}
 
 cobertura{
   coverageSourceDirs = [project.sourceSets.main.java.srcDirs, 
@@ -24,10 +34,17 @@ cobertura{
 }
 
 repositories {
+    //maven {
+    //    delegate.url("https://repository-saucelabs.forge.cloudbees.com/release")
+    //}
     mavenCentral()
 }
 
 dependencies {
+    //I thought about including the sauce-ondemand as an optional plugin
+    //but what if you don't want it but want this plugin? You need the above
+    //maven repo too if you want to bake it in and get the user and password from it
+    //optionalJenkinsPlugins 'org.jenkins-ci.plugins:sauce-ondemand:1.97'
     compile 'org.jsoup:jsoup:1.7.2',
             'org.jenkins-ci.plugins:ant:1.1'
     groovy 'org.codehaus.groovy:groovy-all:1.8.6'
@@ -37,8 +54,8 @@ dependencies {
 }
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.4'
-description = 'Axis for current capabilities of a selenium Server'
+version = '0.0.5'
+description = 'Axis for current capabilities of a Selenium Server'
 
 jenkinsPlugin {
     coreVersion = '1.480'
@@ -56,4 +73,10 @@ jenkinsPlugin {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.8'
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(Compile) {
+        options.compilerArgs << "-Xlint:unchecked"
+    }
 }

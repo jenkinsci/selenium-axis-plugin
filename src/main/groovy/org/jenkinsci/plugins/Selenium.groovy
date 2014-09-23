@@ -1,106 +1,75 @@
 package org.jenkinsci.plugins
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
-import org.jsoup.nodes.Document
+import org.jenkinsci.complex.axes.ItemList
 
 class Selenium {
 
-    def seleniumCapabilities = new ArrayList<SeleniumCapability>()
+    def seleniumCapabilities = new ItemList<? extends SeleniumCapability>()
+    def seleniumLatest = new ItemList<? extends SeleniumCapability>()
+    def seleniumSelected = new ItemList<? extends SeleniumCapability>()
 
     def seleniumVer
-    def browsers = new ArrayList<String>()
-    def platforms = new ArrayList<String>()
-    def versions = new ArrayList<String>()
+    def browsers = []
+    def platforms = []
+    def versions = []
 
-    Selenium( Document document, Class<? extends SeleniumCapability> clazz ){
-        def ver = document.select("h2").first()
-        if (!ver)
-            ver = document.select("h1").first()
+    Selenium( ISeleniumCapabilityReader reader, Class<? extends SeleniumCapability> clazz  ) {
 
-        seleniumVer = ver.text()
-        //throw new Exception("Not a Valid Selenium URL")
+        def latestMap = [:]
 
-        //selenium with Jenkins 2.25
-        Elements capabilities = document.select("fieldset > img");
-        capabilities.addAll(document.select("fieldset > a"));
-
-        //selenium 2.33.0, 2.35.0
-        capabilities.addAll(document.select("p > img"));
-        capabilities.addAll(document.select("p > a"));
-
-        for (Element capability : capabilities) {
-            //SeleniumCapability n = new SeleniumCapability(capability.attr("title"))
-            SeleniumCapability n = clazz.newInstance(capability.attr("title"))
-            if (seleniumCapabilities.contains(n))
+        reader.capabilities.each {
+            SeleniumCapability n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')
+            if (seleniumCapabilities.contains(n)) {
                 seleniumCapabilities.get(seleniumCapabilities.indexOf(n)).incr()
-            else
+                if ( it.api_name == 'internet explorer' ) {
+                    latestMap["${it.api_name}-${it.os}-${it.short_version}"] = n
+                } else if ( it.short_version != 'beta'
+                        && latestMap["${it.api_name}-${it.os}"].browserVersion < it.short_version ) {
+                    latestMap["${it.api_name}-${it.os}"] = n
+
+                }
+            } else {
                 seleniumCapabilities.add(n)
+                if ( it.api_name == 'internet explorer' ) {
+                    latestMap["${it.api_name}-${it.os}-${it.short_version}"] = n
+                } else if ( it.short_version != 'beta' ) {
+                    latestMap["${it.api_name}-${it.os}"] = n
+                }
+            }
         }
+        seleniumLatest = new ItemList<? extends SeleniumCapability>(latestMap.values())
+
+        seleniumLatest.each {
+            if (['internet explorer', 'chrome', 'safari', 'firefox'].contains(it.browserName)) {
+                seleniumSelected << it
+            }
+        }
+
         Collections.sort(seleniumCapabilities)
 
-        seleniumCapabilities.each() { a_sel ->
-            //seleniumCapabilityDescriptor.add(new SeleniumCapability.SeleniumCapabilityDescriptor(a_sel))
+        seleniumCapabilities.each { aSel ->
+            //seleniumCapabilityDescriptor.add(new SeleniumCapability.SeleniumCapabilityDescriptor(aSel))
 
-            if (!browsers.contains(a_sel.browserName))
-                browsers.add(a_sel.browserName)
-            if (!platforms.contains(a_sel.platformName))
-                platforms.add(a_sel.platformName)
-            if (!versions.contains(a_sel.browserVersion))
-                versions.add(a_sel.browserVersion)
+            if (aSel.browserName && !browsers.contains(aSel.browserName)) {
+                browsers << aSel.browserName
+            }
+            if (aSel.platformName && !platforms.contains(aSel.platformName)) {
+                platforms << aSel.platformName
+            }
+            if (aSel.browserVersion && !versions.contains(aSel.browserVersion)) {
+                versions << aSel.browserVersion
+            }
         }
         Collections.sort(browsers)
         Collections.sort(platforms)
         Collections.sort(versions)
     }
 
-    static Document loadStream(InputStream input) throws SeleniumException{
-        try{
-            Jsoup.parse(input, "UTF-8", "")
-        }catch(ex){
-            throw new SeleniumException("Didn't find a stream at ${input.toString()}")
-        }
+    List<? extends SeleniumCapability> getSeleniumCapability() {
+        seleniumCapabilities
     }
 
-    static Document loadURL(String url) throws SeleniumException{
-        try{
-            Jsoup.connect("${url}/grid/console").get()
-        }catch(ex){
-            throw new SeleniumException("Didn't find a server at ${url}")
-        }
-    }
-
-    static Document load(String uri) throws SeleniumException{
-        if(uri.startsWith('http://')){
-            Selenium.loadURL(uri)
-        //these are for testing so we don't need to fire up a selenium grid
-        }else if( uri.startsWith('null://')){
-            throw new SeleniumException('null uri passed')
-        }else{
-            Selenium.loadStream(this.class.getResourceAsStream(uri))
-        }
-    }
-
-    //@Override
-    void dump() {
-        println seleniumVer
-        println "Browser/platform"
-        seleniumCapabilities.each { println it.toString2() }
-        println "platform"
-        platforms.each { println it }
-        println "browsers"
-        browsers.each { println it }
-        println "versions"
-        versions.each { println it }
-    }
-
-    String combinationFilter(){
-
-        def ret = new StringBuilder()
-        def join = ''
-
-        seleniumCapabilities.each { ret.append( join + it.combinationFilter() ); join = ' || '}
-        return ret.toString();
-    }
+    //SeleniumCapability random() {
+    //    seleniumCapabilities.get(randomizer.nextInt(seleniumCapabilities.size()))
+    //}
 }

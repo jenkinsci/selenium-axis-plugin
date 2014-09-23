@@ -1,18 +1,17 @@
 package org.jenkinsci.plugins
 
-import org.junit.Rule
 import spock.lang.Specification
 
-class SeleniumCapabilitySpec extends Specification{
+class SeleniumCapabilitySpec extends Specification {
 
     def 'Create Param'() {
 
-        def selCap = new SeleniumCapability('Browser', 'Platform', 'Version')
+        def selCap = new SeleniumCapability('Browser', 'Platform', 'Version', 'SEL')
 
         expect:
-        selCap.getBrowserName().matches('Browser')
-        selCap.getBrowserVersion().matches('Version')
-        selCap.getPlatformName().matches('Platform')
+        selCap.browserName.matches('Browser')
+        selCap.browserVersion.matches('Version')
+        selCap.platformName.matches('Platform')
     }
 
     def 'Create No Param'() {
@@ -20,8 +19,8 @@ class SeleniumCapabilitySpec extends Specification{
         def selCap = new SeleniumCapability()
 
         expect:
-        selCap.getBrowserName().matches('Any')
-        selCap.getBrowserVersion().matches('Any')
-        selCap.getPlatformName().matches('Any')
+        selCap.browserName.matches('Any')
+        selCap.browserVersion.matches('Any')
+        selCap.platformName.matches('Any')
     }
 }

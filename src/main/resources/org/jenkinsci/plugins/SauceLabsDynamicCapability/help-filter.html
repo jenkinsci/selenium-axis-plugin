@@ -1,0 +1,41 @@
+<div>
+    This is a groovy expression.
+    <p>There is a utility class which implements <a href="http://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank">Levenshtien distance</a> to select different combinations.
+    <br>The default is a distance of 12, which means to say all the capabilities have to be at least 12 characters different.
+    <p>There are two objects available to the expression
+    <ul>
+    <li>current</li>
+    <li>selected</li>
+    </ul>
+    <br>current is the next object candidate to add with three properties
+    <br>selected is a list of the already added objects
+    <br>The properties available are
+    <ul>
+        <li>String browserName</li>
+        <li>String platformName</li>
+        <li>String browserVersion</li>
+    </ul>
+    and toString() returns the axis value.
+    <p>Examples (you need to import the Levenshtien class to use it)
+    <pre>
+        import org.jenkinsci.plugins.Levenshtien
+
+        def different = true
+        selected.any {
+          if (Levenshtien.distance(current.browserName, it.browserName) < 1) {
+            different = false
+            true
+          }
+          if (Levenshtien.distance(current.platformName, it.platformName) < 1) {
+            different = false
+            true
+          }
+          if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
+            different = false
+            true
+          }
+        }
+        return different
+    </pre>
+    <br>This example ensures the browser, platform and label are distinct.
+</div>

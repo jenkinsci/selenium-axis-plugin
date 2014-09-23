@@ -1,77 +1,64 @@
 package org.jenkinsci.plugins
 
 import hudson.Extension
+import hudson.util.ListBoxModel
 import org.kohsuke.stapler.DataBoundConstructor
-import hudson.model.Descriptor
+import org.jenkinsci.complex.axes.Item
+import org.jenkinsci.complex.axes.ItemDescriptor
+import org.kohsuke.stapler.QueryParameter
 
-import java.util.regex.Matcher
+class SeleniumCapability extends  Item implements Comparable {
 
-class SeleniumCapability extends  ComplexAxisItem implements Comparable {
-
-    protected Integer maxInstances
-    protected String browserName
-    protected String platformName
-    protected String browserVersion
+    String browserName
+    String platformName
+    String browserVersion
+    String capType = 'SEL'
+    @SuppressWarnings('UnnecessaryTransientModifier')
+    transient Integer maxInstances
 
     SeleniumCapability() {
-        browserName = "Any"
-        platformName = "Any"
-        browserVersion = "Any"
+        browserName = 'Any'
+        platformName = 'Any'
+        browserVersion = 'Any'
         maxInstances = 1
     }
 
     @DataBoundConstructor
+    SeleniumCapability(String browserName, String platformName, String browserVersion, String capType) {
+        this.capType = capType ?: 'SEL'
+        this.browserName = browserName ?: 'Any'
+        this.platformName = platformName ?: 'Any'
+        this.browserVersion = browserVersion ?: 'Any'
+        this.maxInstances = 1
+    }
+
     SeleniumCapability(String browserName, String platformName, String browserVersion) {
-        this.browserName = browserName
-        this.platformName = platformName
-        this.browserVersion = browserVersion
+        SeleniumCapability(browserName, platformName, browserVersion, 'SEL')
     }
 
-    SeleniumCapability(String titleAttr) {
-        this()
-
-        Matcher m = (titleAttr =~ /(platform|browserName|version)=(\w+)/)
-
-        while (m.find()) {
-            if (m.group(1).equals("platform"))
-                this.platformName = m.group(2)
-            else if (m.group(1).equals("browserName"))
-                this.browserName = m.group(2)
-            else if (m.group(1).equals("version"))
-                this.browserVersion = m.group(2)
-        }
+    String getCapType() {
+        capType ?: 'SEL'
     }
 
-    public Integer incr() {
+    Integer incr() {
         maxInstances++
-    }
-
-    public String combinationFilter() {
-        String.format("(TEST_PLATFORM=='%s' && TEST_BROWSER=='%s' && TEST_VERSION=='%s')", platformName, browserName, browserVersion)
     }
 
     @Override
     String toString() {
-        String.format("%s-%s-%s", platformName, browserName, browserVersion)
+        String.format('%s-%s-%s-%s', capType, platformName, browserName, browserVersion)
     }
 
+    @Extension static class DescriptorImpl extends ItemDescriptor {
+        final String displayName = 'Defined Capability'
 
-    public String getBrowserName(){
-        this.browserName
-    }
+        ListBoxModel doFillCapTypeItems(@QueryParameter String capType) {
+            def cbm = new ListBoxModel()
 
-    public String getPlatformName(){
-        this.platformName
-    }
+            cbm << new ListBoxModel.Option('Local Selenium', 'SEL', 'SEL' == capType)
+            cbm << new ListBoxModel.Option('SauceLabs', 'SL', 'SL' == capType)
 
-    public String getBrowserVersion(){
-        this.browserVersion
-    }
-
-    @Extension public static class DescriptorImpl extends ComplexAxisItemDescriptor {
-
-        @Override public String getDisplayName() {
-            return "Defined Capability";
+            cbm
         }
     }
 }

@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins
 
-import hudson.matrix.AxisList
-import hudson.matrix.MatrixProject
 import jenkins.model.Jenkins
 import org.jvnet.hudson.test.JenkinsRule
 import org.junit.Rule
@@ -16,13 +14,13 @@ class SeleniumDynamicCapabilitySpec extends Specification {
     @Shared seleniumAxisDescriptor
     @Shared seleniumDynamicCapabilityDescriptor
 
-    void configure(seleniumFile){
+    void configure(seleniumFile) {
 
-        if(seleniumAxisDescriptor == null){
-            seleniumAxisDescriptor= Jenkins.getInstance().getDescriptor(SeleniumAxis.class)
+        if (seleniumAxisDescriptor == null) {
+            seleniumAxisDescriptor = Jenkins.instance.getDescriptor(SeleniumAxis)
         }
-        if(seleniumDynamicCapabilityDescriptor == null){
-            seleniumDynamicCapabilityDescriptor= Jenkins.getInstance().getDescriptor(SeleniumDynamicCapability.class)
+        if (seleniumDynamicCapabilityDescriptor == null) {
+            seleniumDynamicCapabilityDescriptor = Jenkins.instance.getDescriptor(SeleniumDynamicCapability)
         }
 
         seleniumAxisDescriptor.setServer(seleniumFile)
@@ -30,12 +28,11 @@ class SeleniumDynamicCapabilitySpec extends Specification {
 
     def 'Build'() {
         given:
-        configure("/grid-2.33.0.html")
+        configure('/grid-2.33.0.html')
         def sdc = new SeleniumDynamicCapability(seleniumDynamicCapabilityDescriptor.loadDefaultItems())
 
         expect:
-        sdc.getSeleniumCapabilities().size() == 4
+        sdc.seleniumCapabilities.size() == 4
     }
 }
-
 

@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.SeleniumDynamicCapability
+package org.jenkinsci.complex.axes.Container
 /*
 This Groovy script is used to produce the global configuration option.
 

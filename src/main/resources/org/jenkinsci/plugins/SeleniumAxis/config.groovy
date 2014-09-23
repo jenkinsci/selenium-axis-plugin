@@ -1,3 +1,4 @@
+package org.jenkinsci.plugins.SeleniumAxis
 /*
 This Groovy script is used to produce the global configuration option.
 
@@ -14,12 +15,23 @@ namespace(lib.FormTagLib).with {
     entry(title: _("Name"), field:"name") {
         textbox( default:"label")
     }
+
+    optionalBlock(field:"slOverride", inline:true, title: 'Override SauceLabs User Details') {
+        entry(title: 'Username', field: 'slName', description: 'Username in Saucelabs') {
+            textbox()
+        }
+        entry(title: 'Password', field: 'slPassword', description: 'Password in Saucelabs') {
+            password()
+        }
+    }
+
+
     block{
         entry(field:"seleniumCapabilities") {
-            hetero_list( name:       "seleniumCapabilities",
+            hetero_list( name: "seleniumCapabilities",
                       hasHeader: true,
-                      descriptors:descriptor.complexAxisItemTypes(),
-                      items:      instance? instance.getComplexAxisItems():descriptor.loadDefaultItems())
+                      descriptors:descriptor.axisItemTypes(),
+                      items:      instance? instance.getSeleniumCapabilities():descriptor.loadDefaultItems())
         }
     }
 }

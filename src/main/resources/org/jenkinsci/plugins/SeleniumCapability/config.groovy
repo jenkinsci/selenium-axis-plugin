@@ -11,6 +11,9 @@ tags they use. Views are always organized according to its owner class,
 so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
+    entry(title:_("Entry Type"), field:"capType") {
+        select( default: 'SEL')
+    }
     entry(title:_("Platform Name"), field:"platformName") {
         textbox( default:"Any")
     }
