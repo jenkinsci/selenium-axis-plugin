@@ -46,7 +46,7 @@ class SeleniumCapability extends  Item implements Comparable {
 
     @Override
     String toString() {
-        String.format('%s-%s-%s-%s', capType, platformName, browserName, browserVersion)
+        String.format('%s-%s-%s-%s', getCapType(), platformName, browserName, browserVersion)
     }
 
     @Extension static class DescriptorImpl extends ItemDescriptor {

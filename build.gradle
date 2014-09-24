@@ -54,7 +54,7 @@ dependencies {
 }
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.5'
+version = '0.0.6'
 description = 'Axis for current capabilities of a Selenium Server'
 
 jenkinsPlugin {
