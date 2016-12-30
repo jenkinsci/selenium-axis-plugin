@@ -2,6 +2,7 @@ package org.jenkinsci.plugins
 
 import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
+//import hudson.matrix.MatrixTest
 import hudson.util.Secret
 import jenkins.model.Jenkins
 import org.jsoup.Jsoup
@@ -9,6 +10,7 @@ import spock.lang.Specification
 import spock.lang.Shared
 import org.junit.Rule
 import org.jvnet.hudson.test.JenkinsRule
+
 
 class SeleniumAxisSpec extends Specification {
 
@@ -35,7 +37,7 @@ class SeleniumAxisSpec extends Specification {
         seleniumAxisDescriptor.sauceLabsPwd = new Secret('pass')
         seleniumAxisDescriptor.sauceLabsAPIURL = sauceLabsFile
 
-        def matrixProject = rule.createMatrixProject()
+        def matrixProject = rule.createProject(MatrixProject, "m")
 
         SeleniumAxis axis = new SeleniumAxis('TEST', false, '', new Secret(''),
                 seleniumAxisDescriptor.loadDefaultItems() )
@@ -50,7 +52,7 @@ class SeleniumAxisSpec extends Specification {
 
     MatrixProject configureManual() {
 
-        def matrixProject = rule.createMatrixProject()
+        def matrixProject = rule.createProject(MatrixProject, "m")
 
         def sc = new SeleniumCapability()
         def sc2 = new SeleniumCapability('Browser', 'Platform', 'Version', 'SEL')
@@ -100,7 +102,7 @@ class SeleniumAxisSpec extends Specification {
         given:
 
         def sad = Jenkins.instance.getDescriptor(SeleniumAxis)
-        def matrixProject = rule.createMatrixProject()
+        def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
         sad.setServer('/empty-grid-2.35.0.html')
@@ -123,7 +125,7 @@ class SeleniumAxisSpec extends Specification {
 
     def 'Empty Axis'() {
         given:
-        def matrixProject = rule.createMatrixProject()
+        def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
         def axis = new SeleniumAxis('TEST', false, '', new Secret(''), null)
