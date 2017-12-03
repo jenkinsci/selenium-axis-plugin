@@ -34,7 +34,7 @@ class SeleniumDynamicCapability extends  Container {
 
     @Override
     List<String> rebuild(List<String> list) {
-        def sc = descriptor.loadDefaultItems()
+        List<? extends Item> sc = descriptor.loadDefaultItems()
 
         if (sc.size() == 0) {
             throw (new SeleniumException('No capabilities detected'))
@@ -67,7 +67,7 @@ class SeleniumDynamicCapability extends  Container {
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
-            def sdc = new SeleniumDynamicCapability(loadDefaultItems())
+            SeleniumDynamicCapability sdc = new SeleniumDynamicCapability(loadDefaultItems())
 
             cai.add(sdc)
 

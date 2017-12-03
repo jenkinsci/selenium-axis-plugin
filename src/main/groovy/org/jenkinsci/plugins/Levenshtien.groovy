@@ -5,8 +5,8 @@ package org.jenkinsci.plugins
 
 class Levenshtien {
     static int distance(String str1, String str2) {
-        def str1Len = str1.length()
-        def str2Len = str2.length()
+        int str1Len = str1.length()
+        int  str2Len = str2.length()
         int[][] distance = new int[str1Len + 1][str2Len + 1]
         (str1Len + 1).times { distance[it][0] = it }
         (str2Len + 1).times { distance[0][it] = it }

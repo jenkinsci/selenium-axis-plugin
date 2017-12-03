@@ -2,6 +2,7 @@ package org.jenkinsci.plugins
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
 import java.util.regex.Matcher
@@ -10,11 +11,11 @@ import java.util.regex.Matcher
  * Created by jeremymarshall on 29/08/2014.
  */
 class SeleniumHubCapabilityReader implements ISeleniumCapabilityReader {
-    def capabilities = []
+    List<Map> capabilities = []
     @Override
     void loadCapabilities(String source) throws SeleniumException {
         try {
-            def document = rawRead(source)
+            Document document = rawRead(source)
 
             //selenium with Jenkins 2.25
             Elements cap = document.select('fieldset > img')
@@ -43,7 +44,7 @@ class SeleniumHubCapabilityReader implements ISeleniumCapabilityReader {
 
     private Map convert(String titleAttr) {
 
-        def ret = [:]
+        Map ret = [:]
         Matcher m = (titleAttr =~ /(platform|browserName|version)=(\w+)/)
 
         while (m.find()) {

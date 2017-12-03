@@ -37,6 +37,7 @@ import org.jenkinsci.complex.axes.ItemDescriptor
 import hudson.util.Secret
 import org.kohsuke.stapler.StaplerRequest
 import hudson.model.Descriptor.FormException
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 
 class SeleniumAxis extends Axis {
     Boolean slOverride
@@ -70,7 +71,7 @@ class SeleniumAxis extends Axis {
     }
 
     static String buildURL(String name, Secret pwd, String url) {
-        def myurl = url - 'http://'
+        String myurl = url - 'http://'
         "http://${name}:${pwd}@${myurl}"
     }
 
@@ -79,7 +80,7 @@ class SeleniumAxis extends Axis {
 
        //so the value is PLATFORM-BROWSER-VERSION
 
-       def parts = value.split(/-/)
+       List<String> parts = value.split(/-/)
 
        map.put(name + '_PLATFORM', parts[1])
        map.put(name + '_BROWSER', parts[2])
@@ -107,10 +108,10 @@ class SeleniumAxis extends Axis {
         List<ItemDescriptor> axisItemTypes() {
             def ait = Jenkins.instance.<Item,ItemDescriptor>getDescriptorList(Item)
 
-            def ret = []
+            List<ItemDescriptor> ret = []
 
             for (int i = 0; i < ait.size(); i++) {
-                def name = ait.get(i).getClass().name
+                String name = ait.get(i).getClass().name
 
                 //don't want the RO version to appear in the add list as it is added as part of the Dynamic item
                 if (!name.contains('RO$')) {
@@ -124,10 +125,10 @@ class SeleniumAxis extends Axis {
             if (sauceLabs) {
                 try {
                     if (sauceLabsCapabilities == null) {
-                        def reader = new SauceLabsCapabilityReader()
+                        SauceLabsCapabilityReader reader = new SauceLabsCapabilityReader()
                         reader.loadCapabilities(sauceLabsAPIURL)
 
-                        def sel = new Selenium(reader, SauceLabsCapabilityRO)
+                        Selenium sel = new Selenium(reader, SauceLabsCapabilityRO)
                         sauceLabsCapabilities = [:]
 
                         sauceLabsCapabilities['latest'] = sel.seleniumLatest
@@ -147,19 +148,19 @@ class SeleniumAxis extends Axis {
         List<? extends SeleniumCapability> getSeleniumCapabilities() {
             try {
                 //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
-                def reader = new SeleniumHubCapabilityReader()
+                SeleniumHubCapabilityReader reader = new SeleniumHubCapabilityReader()
                 reader.loadCapabilities(server)
 
-                def sel = new Selenium(reader, SeleniumCapabilityRO)
+                Selenium sel = new Selenium(reader, SeleniumCapabilityRO)
                 sel.seleniumLatest
 
             } catch (ex) {
                 ItemList.emptyList()
             }
         }
-        List<? extends SeleniumCapability> getRandomSauceLabsCapabilities(String which, Integer count, String filter) {
+        List<? extends SeleniumCapability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
 
-            def selected = new ItemList<? extends SeleniumCapability>()
+            ItemList<? extends SeleniumCapability> selected = new ItemList<? extends SeleniumCapability>()
             def cap = getSauceLabsCapabilities(which)
             def myCap = cap.clone()
 
@@ -169,51 +170,44 @@ class SeleniumAxis extends Axis {
                 return ItemList.emptyList()
             }
 
-            def tmpFilter
+            //String tmpFilter
 
-            if (!filter || filter == '') {
-                tmpFilter = '''
-                        import org.jenkinsci.plugins.Levenshtien
+//            if (!secureFilter.script || secureFilter.script == '') {
+//                tmpFilter = '''
+//                        import org.jenkinsci.plugins.Levenshtien
+//
+//                        def different = true
+//                        selected.any {
+//                            if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
+//                                different = false
+//                                true
+//                            }
+//                        }
+//                        return different
+//                    '''
+//            } else {
+//                tmpFilter = secureFilter.script
+//            }
 
-                        def different = true
-                        selected.any {
-                            //if (Levenshtien.distance(current.browserName, it.browserName) < 3) {
-                            //    different = false
-                            //    true
-                            //}
-                            //if (Levenshtien.distance(current.platformName, it.platformName) < 3) {
-                            //    different = false
-                            //    true
-                            //}
-                            if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
-                                different = false
-                                true
-                            }
-                        }
-                        return different
-                    '''
-            } else {
-                tmpFilter = filter
-            }
-
-            final GroovyShell SHELL = new GroovyShell(Jenkins.instance.pluginManager.uberClassLoader)
-            Script compiledScript = SHELL.parse(tmpFilter)
+            //final GroovyShell SHELL = new GroovyShell(Jenkins.instance.pluginManager.uberClassLoader)
+            //Script compiledScript = SHELL.parse(tmpFilter)
 
             while (count > 0 && myCap.size() > 0) {
                 def current = myCap.pop()
-                def differentEnough = true
+                //boolean differentEnough = true
 
                 Binding binding = new Binding()
                 binding.setVariable('current', current)
                 binding.setVariable('selected', selected)
 
-                compiledScript.setBinding(binding)
+                //compiledScript.setBinding(binding)
+                //differentEnough = compiledScript.run()
 
-                //try {
-                    differentEnough = compiledScript.run()
-                //} catch (Exception ex) {
-                //    println(ex)
-                //}
+                println(secureFilter.script)
+
+                def differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
+
+                println(differentEnough.toString())
 
                 if (differentEnough) {
                     selected << current

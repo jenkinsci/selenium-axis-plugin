@@ -1,12 +1,12 @@
 plugins {
-    id "org.jenkins-ci.jpi" version "0.21.0"
+    id "org.jenkins-ci.jpi" version "0.24.0"
     id "net.saliman.cobertura" version "2.3.2"
 }
 
 apply plugin: 'codenarc'
 
 codenarc {
-    toolVersion = '0.21'
+    toolVersion = '0.26.0'
     configFile = file('config/codenarc/rules.groovy')
 }
 
@@ -34,7 +34,8 @@ dependencies {
     compile 'org.jsoup:jsoup:1.7.2',
             'org.jenkins-ci.plugins:ant:1.1',
             'org.jenkins-ci.plugins:matrix-project:1.7.1@jar',
-            'org.jenkins-ci.plugins:script-security:1.24@jar'
+            'org.jenkins-ci.plugins:script-security:1.15@jar',
+            'org.jenkins-ci.plugins:junit:1.19@jar'
     //groovy 'org.codehaus.groovy:groovy-all:1.8.6'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     jenkinsTest 'org.jenkins-ci.plugins:ant:1.1@jar',
@@ -63,7 +64,7 @@ jenkinsPlugin {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = '3.5.1'
 }
 
 //gradle.projectsEvaluated {

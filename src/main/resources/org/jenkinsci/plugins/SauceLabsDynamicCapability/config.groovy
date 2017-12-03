@@ -21,10 +21,8 @@ namespace(lib.FormTagLib).with {
         entry(title: 'Selection Criteria', field: 'criteria', description: 'Criteria for selecting capabilities') {
             select( default: 'latest')
         }
-        entry(title: 'Filter', field: 'filter', description: 'Restrict capabilities with a groovy expression') {
-            expandableTextbox()
-        }
-        validateButton( title: 'Test', method: 'rebuild', with:'number,criteria,filter')
+        property(field = 'secureFilter')
+        validateButton( title: 'Test', method: 'rebuild', with:'number,criteria,secureFilter')
     }
 
     //entry(title: 'Capabilities', field: 'sauceLabsCapabilities', description: 'These values will be re-evaluated during a build') {

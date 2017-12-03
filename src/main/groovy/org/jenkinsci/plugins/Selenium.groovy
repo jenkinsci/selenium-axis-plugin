@@ -4,18 +4,18 @@ import org.jenkinsci.complex.axes.ItemList
 
 class Selenium {
 
-    def seleniumCapabilities = new ItemList<? extends SeleniumCapability>()
-    def seleniumLatest = new ItemList<? extends SeleniumCapability>()
-    def seleniumSelected = new ItemList<? extends SeleniumCapability>()
+    ItemList<? extends SeleniumCapability> seleniumCapabilities = new ItemList<? extends SeleniumCapability>()
+    ItemList<? extends SeleniumCapability> seleniumLatest = new ItemList<? extends SeleniumCapability>()
+    ItemList<? extends SeleniumCapability> seleniumSelected = new ItemList<? extends SeleniumCapability>()
 
-    def seleniumVer
-    def browsers = []
-    def platforms = []
-    def versions = []
+    String seleniumVer
+    List<String> browsers = []
+    List<String> platforms = []
+    List<String> versions = []
 
     Selenium( ISeleniumCapabilityReader reader, Class<? extends SeleniumCapability> clazz  ) {
 
-        def latestMap = [:]
+        Map<String, String> latestMap = [:]
 
         reader.capabilities.each {
             SeleniumCapability n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')

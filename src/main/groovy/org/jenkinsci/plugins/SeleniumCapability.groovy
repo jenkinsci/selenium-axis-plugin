@@ -53,7 +53,7 @@ class SeleniumCapability extends  Item implements Comparable {
         final String displayName = 'Defined Capability'
 
         ListBoxModel doFillCapTypeItems(@QueryParameter String capType) {
-            def cbm = new ListBoxModel()
+            ListBoxModel cbm = new ListBoxModel()
 
             cbm << new ListBoxModel.Option('Local Selenium', 'SEL', 'SEL' == capType)
             cbm << new ListBoxModel.Option('SauceLabs', 'SL', 'SL' == capType)

@@ -12,8 +12,8 @@ class SauceLabsCapabilityReader implements ISeleniumCapabilityReader {
     @Override
     void loadCapabilities(String url) throws SeleniumException {
         try {
-            def payload = rawRead(url)
-            def slurper = new JsonSlurper()
+            String payload = rawRead(url)
+            JsonSlurper slurper = new JsonSlurper()
             capabilities = slurper.parseText(payload)
         } catch (IllegalArgumentException e) {
             throw new SeleniumException( e.message )

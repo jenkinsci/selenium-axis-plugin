@@ -2,10 +2,13 @@ package org.jenkinsci.plugins
 
 import hudson.util.Secret
 import jenkins.model.Jenkins
+import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
+import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 import org.junit.Rule
 import org.jvnet.hudson.test.JenkinsRule
 import spock.lang.Shared
 import spock.lang.Specification
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 
 class SauceLabsDynamicCapabilitySpec extends Specification {
 
@@ -33,8 +36,12 @@ class SauceLabsDynamicCapabilitySpec extends Specification {
     def 'Build'() {
         given:
         configure('/saucelabs_3.json')
+        List<ClasspathEntry> cp = []
+        SecureGroovyScript script = new SecureGroovyScript('', true )//.configuring(ApprovalContext.create())
+
         def sdc = new SauceLabsDynamicCapability(
-                seleniumAxisDescriptor.getRandomSauceLabsCapabilities('all', 3, ''))
+
+                seleniumAxisDescriptor.getRandomSauceLabsCapabilities('all', 3, script))
 
         expect:
         sdc.seleniumCapabilities.size() == 3

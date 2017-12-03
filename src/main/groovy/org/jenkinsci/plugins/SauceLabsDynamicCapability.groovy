@@ -8,13 +8,19 @@ import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
 import org.kohsuke.stapler.DataBoundConstructor
 import org.kohsuke.stapler.QueryParameter
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
+import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
+import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 
 class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
 
     Integer number = 3
     Boolean advanced = false
     String criteria
-    String filter
+    @SuppressWarnings('UnnecessaryTransientModifier')
+    transient  String filter
+    SecureGroovyScript secureFilter
+
     Boolean override = false
 
     SauceLabsDynamicCapability() {
@@ -29,7 +35,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
     List<String> rebuild(List<String> list) {
         if (this.advanced) {
             setSeleniumCapabilities(descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
-                    this.criteria, this.number, this.filter))
+                    this.criteria, this.number, this.secureFilter))
         } else {
             setSeleniumCapabilities(descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
                     'latest', this.number, ''))
@@ -38,7 +44,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         list
     }
     @DataBoundConstructor
-    SauceLabsDynamicCapability(String number, Boolean advanced, String criteria, String filter) {
+    SauceLabsDynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript securegroovyscript ) {
         if (number.isNumber()) {
             this.number = number.toInteger()
         } else {
@@ -46,11 +52,12 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         }
         this.advanced = advanced
         this.criteria = criteria
-        this.filter = filter
+        this.secureFilter = secureFilter
+        this.secureFilter.configuringWithKeyItem()
 
         try {
             this.complexAxisItems = descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
-                    this.criteria, this.number, this.filter)
+                    this.criteria, this.number, this.secureFilter)
         } catch (Exception) {
             this.complexAxisItems = ItemList.emptyList()
         }
@@ -68,11 +75,22 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         'DetectedSauceLibs'
     }
 
+    @SuppressWarnings('UnusedPrivateMethod')
+    private Object readResolve() {
+        if (filter != null) {
+            List<ClasspathEntry> cp = []
+
+            secureFilter = new SecureGroovyScript(filter, false, cp).configuring(ApprovalContext.create())
+            filter = null
+        }
+        this
+    }
+
     @Extension static class DescriptorImpl extends SeleniumDynamicCapability.DescriptorImpl {
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
-            def sdc = new SauceLabsDynamicCapability(loadDefaultItems())
+            SauceLabsDynamicCapability sdc = new SauceLabsDynamicCapability(loadDefaultItems())
 
             cai.add(sdc)
 
@@ -93,7 +111,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
             }
 
             try {
-                def val = new Integer(value)
+                Integer val = new Integer(value)
                 if (val < 0) {
                     return FormValidation.error('This is not a valid Number.')
                 }
@@ -105,7 +123,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         }
 
         ListBoxModel doFillCriteriaItems(@QueryParameter String criteria) {
-            def cbm = new ListBoxModel()
+            ListBoxModel cbm = new ListBoxModel()
 
             cbm << new Option('All', 'all', 'all' == criteria)
             cbm << new Option('Latest Browsers', 'latest', 'latest' == criteria)
@@ -114,11 +132,11 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
             cbm
         }
 
-        FormValidation doRebuild(@QueryParameter('filter') final String filter,
+        FormValidation doRebuild(@QueryParameter('secureFilter') final SecureGroovyScript secureFilter,
                                         @QueryParameter('criteria') final String criteria,
                                         @QueryParameter('number') final Integer number) throws Exception {
             try {
-                String s = topLevelDescriptor.getRandomSauceLabsCapabilities(criteria, number, filter)
+                String s = topLevelDescriptor.getRandomSauceLabsCapabilities(criteria, number, secureFilter)
 
                 return FormValidation.ok(s)
             } catch (SeleniumException e) {
