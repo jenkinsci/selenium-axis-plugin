@@ -1,5 +1,6 @@
 plugins {
-    id "org.jenkins-ci.jpi" version "0.24.0"
+    id "org.jenkins-ci.jpi" version "0.22.0"
+    //id "org.jenkins-ci.jpi" version "0.24.0"
     id "net.saliman.cobertura" version "2.3.2"
 }
 
@@ -20,28 +21,36 @@ cobertura{
   coverageIgnoreTrivial = true
 }
 
-//repositories {
-//    //    delegate.url("https://repository-saucelabs.forge.cloudbees.com/release")
-//    //}
-//    mavenCentral()
-//}
+
 
 dependencies {
-    //I thought about including the sauce-ondemand as an optional plugin
-    //but what if you don't want it but want this plugin? You need the above
-    //maven repo too if you want to bake it in and get the user and password from it
-    //optionalJenkinsPlugins 'org.jenkins-ci.plugins:sauce-ondemand:1.97'
     compile 'org.jsoup:jsoup:1.7.2',
             'org.jenkins-ci.plugins:ant:1.1',
             'org.jenkins-ci.plugins:matrix-project:1.7.1@jar',
             'org.jenkins-ci.plugins:script-security:1.15@jar',
             'org.jenkins-ci.plugins:junit:1.19@jar'
-    //groovy 'org.codehaus.groovy:groovy-all:1.8.6'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     jenkinsTest 'org.jenkins-ci.plugins:ant:1.1@jar',
                 'org.jenkins-ci.plugins:javadoc:1.0@jar',
                 'org.jenkins-ci.main:jenkins-test-harness:2.18@jar',
                 'org.jenkins-ci.plugins:junit:1.19@jar'
+
+
+//    compile 'org.jsoup:jsoup:1.7.2'//,
+//            //'org.kohsuke:groovy-sandbox:1.6'
+//
+//    jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.6@jar',
+//                   'org.jenkins-ci.plugins:script-security:1.15@jar'
+//
+//    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+//
+//    jenkinsTest  'org.jenkins-ci.plugins:ant:1.1@jar',
+//                 'org.jenkins-ci.plugins:javadoc:1.0@jar',
+//                 'org.jenkins-ci.plugins:junit:1.6@jar',
+//                 'org.jenkins-ci.main:maven-plugin:2.16@jar',
+//                 'org.jenkins-ci.plugins:mailer:1.7@jar',
+//                 'org.jenkins-ci.main:jenkins-test-harness:2.18@jar'
+
 }
 
 group = 'org.jenkins-ci.plugins'
@@ -49,7 +58,7 @@ version = '0.0.6'
 description = 'Axis for current capabilities of a Selenium Server'
 
 jenkinsPlugin {
-    //coreVersion = '1.480'
+    //coreVersion = '1.625.3'
     coreVersion = '2.38'
     displayName = 'Selenium Capability Axis'
     url = 'https://wiki.jenkins-ci.org/display/JENKINS/Selenium+Axis+Plugin'

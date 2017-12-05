@@ -38,7 +38,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
                     this.criteria, this.number, this.secureFilter))
         } else {
             setSeleniumCapabilities(descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
-                    'latest', this.number, ''))
+                    'latest', this.number, new SecureGroovyScript('', true)))
         }
             seleniumCapabilities.each { list.add(it.toString()) }
         list

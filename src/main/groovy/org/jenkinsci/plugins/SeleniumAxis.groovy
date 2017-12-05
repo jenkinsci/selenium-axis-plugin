@@ -170,28 +170,6 @@ class SeleniumAxis extends Axis {
                 return ItemList.emptyList()
             }
 
-            //String tmpFilter
-
-//            if (!secureFilter.script || secureFilter.script == '') {
-//                tmpFilter = '''
-//                        import org.jenkinsci.plugins.Levenshtien
-//
-//                        def different = true
-//                        selected.any {
-//                            if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
-//                                different = false
-//                                true
-//                            }
-//                        }
-//                        return different
-//                    '''
-//            } else {
-//                tmpFilter = secureFilter.script
-//            }
-
-            //final GroovyShell SHELL = new GroovyShell(Jenkins.instance.pluginManager.uberClassLoader)
-            //Script compiledScript = SHELL.parse(tmpFilter)
-
             while (count > 0 && myCap.size() > 0) {
                 def current = myCap.pop()
                 //boolean differentEnough = true
@@ -199,9 +177,6 @@ class SeleniumAxis extends Axis {
                 Binding binding = new Binding()
                 binding.setVariable('current', current)
                 binding.setVariable('selected', selected)
-
-                //compiledScript.setBinding(binding)
-                //differentEnough = compiledScript.run()
 
                 println(secureFilter.script)
 
