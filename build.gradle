@@ -1,6 +1,6 @@
 plugins {
-    id "org.jenkins-ci.jpi" version "0.22.0"
-    //id "org.jenkins-ci.jpi" version "0.24.0"
+    //id "org.jenkins-ci.jpi" version "0.22.0"
+    id "org.jenkins-ci.jpi" version "0.24.0"
     id "net.saliman.cobertura" version "2.3.2"
 }
 
@@ -22,35 +22,22 @@ cobertura{
 }
 
 
-
+configurations {
+    all*.exclude module: 'junit-dep'
+}
 dependencies {
-    compile 'org.jsoup:jsoup:1.7.2',
-            'org.jenkins-ci.plugins:ant:1.1',
-            'org.jenkins-ci.plugins:matrix-project:1.7.1@jar',
-            'org.jenkins-ci.plugins:script-security:1.15@jar',
-            'org.jenkins-ci.plugins:junit:1.19@jar'
+    compile 'org.jsoup:jsoup:1.11.2',
+            'org.jenkins-ci.plugins:ant:1.7@jar',
+            'org.jenkins-ci.plugins:matrix-project:1.12@jar',
+            'org.jenkins-ci.plugins:script-security:1.36@jar',
+            'org.jenkins-ci.plugins:junit:1.23@jar'
+
+    // https://mvnrepository.com/artifact/org.kohsuke/groovy-sandbox
+    compile group: 'org.kohsuke', name: 'groovy-sandbox', version: '1.15'
+
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-    jenkinsTest 'org.jenkins-ci.plugins:ant:1.1@jar',
-                'org.jenkins-ci.plugins:javadoc:1.0@jar',
-                'org.jenkins-ci.main:jenkins-test-harness:2.18@jar',
-                'org.jenkins-ci.plugins:junit:1.19@jar'
-
-
-//    compile 'org.jsoup:jsoup:1.7.2'//,
-//            //'org.kohsuke:groovy-sandbox:1.6'
-//
-//    jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.6@jar',
-//                   'org.jenkins-ci.plugins:script-security:1.15@jar'
-//
-//    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-//
-//    jenkinsTest  'org.jenkins-ci.plugins:ant:1.1@jar',
-//                 'org.jenkins-ci.plugins:javadoc:1.0@jar',
-//                 'org.jenkins-ci.plugins:junit:1.6@jar',
-//                 'org.jenkins-ci.main:maven-plugin:2.16@jar',
-//                 'org.jenkins-ci.plugins:mailer:1.7@jar',
-//                 'org.jenkins-ci.main:jenkins-test-harness:2.18@jar'
-
+    jenkinsTest 'org.jenkins-ci.plugins:javadoc:1.4@jar',
+                'org.jenkins-ci.main:jenkins-test-harness:2.32@jar'
 }
 
 group = 'org.jenkins-ci.plugins'

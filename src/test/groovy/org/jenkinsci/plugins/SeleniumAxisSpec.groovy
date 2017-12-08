@@ -2,9 +2,11 @@ package org.jenkinsci.plugins
 
 import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
-//import hudson.matrix.MatrixTest
 import hudson.util.Secret
 import jenkins.model.Jenkins
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
+import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
+import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 import org.jsoup.Jsoup
 import spock.lang.Specification
 import spock.lang.Shared
@@ -41,6 +43,11 @@ class SeleniumAxisSpec extends Specification {
 
         SeleniumAxis axis = new SeleniumAxis('TEST', false, '', new Secret(''),
                 seleniumAxisDescriptor.loadDefaultItems() )
+
+        axis.complexAxisItems[0].secureFilter = new SecureGroovyScript('true', true, Collections.<ClasspathEntry>emptyList() )
+        axis.complexAxisItems[0].secureFilter.configuring(ApprovalContext.create())
+        axis.complexAxisItems[0].advanced = true
+        axis.complexAxisItems[0].criteria = 'latest'
 
         def axl = new AxisList()
 

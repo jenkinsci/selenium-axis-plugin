@@ -38,10 +38,8 @@ class SauceLabsDynamicCapabilitySpec extends Specification {
     def 'Build'() {
         given:
         configure('/saucelabs_3.json')
-        ScriptApproval.get().preapprove('def a = 1', GroovyLanguage.get());
-        SecureGroovyScript script = new SecureGroovyScript('def a = 1', true, Collections.<ClasspathEntry>emptyList() ).configuring(ApprovalContext.create())
-        //SecureGroovyScript script = new SecureGroovyScript('def a = 1', true ).configuring(ApprovalContext.create())
-
+        ScriptApproval.get().preapprove('', GroovyLanguage.get());
+        SecureGroovyScript script = new SecureGroovyScript('true', true, Collections.<ClasspathEntry>emptyList() ).configuring(ApprovalContext.create())
 
         def sdc = new SauceLabsDynamicCapability(
                 seleniumAxisDescriptor.getRandomSauceLabsCapabilities('all', 3, script))
