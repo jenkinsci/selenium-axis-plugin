@@ -40,7 +40,7 @@ class Selenium {
         seleniumLatest = new ItemList<? extends SeleniumCapability>(latestMap.values())
 
         seleniumLatest.each {
-            if (['internet explorer', 'chrome', 'safari', 'firefox'].contains(it.browserName)) {
+            if (['internet explorer', 'chrome', 'safari', 'firefox', 'microsoftedge'].contains(it.browserName)) {
                 seleniumSelected << it
             }
         }

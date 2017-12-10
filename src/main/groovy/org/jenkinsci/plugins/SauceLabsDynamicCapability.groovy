@@ -127,7 +127,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
 
             cbm << new Option('All', 'all', 'all' == criteria)
             cbm << new Option('Latest Browsers', 'latest', 'latest' == criteria)
-            cbm << new Option('Latest Firefox, Chrome, Safari, IE', 'web', 'web' == criteria)
+            cbm << new Option('Latest Firefox, Chrome, Safari, IE, Edge', 'web', 'web' == criteria)
 
             cbm
         }
