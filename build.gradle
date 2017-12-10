@@ -1,5 +1,4 @@
 plugins {
-    //id "org.jenkins-ci.jpi" version "0.22.0"
     id "org.jenkins-ci.jpi" version "0.24.0"
     id "net.saliman.cobertura" version "2.3.2"
 }
@@ -26,27 +25,31 @@ configurations {
     all*.exclude module: 'junit-dep'
 }
 dependencies {
-    compile 'org.jsoup:jsoup:1.11.2',
-            'org.jenkins-ci.plugins:ant:1.7@jar',
-            'org.jenkins-ci.plugins:matrix-project:1.12@jar',
-            'org.jenkins-ci.plugins:script-security:1.36@jar',
-            'org.jenkins-ci.plugins:junit:1.23@jar'
+    compile 'org.jsoup:jsoup:1.11.2'
 
     // https://mvnrepository.com/artifact/org.kohsuke/groovy-sandbox
+    // seems to be a missing dependency in script-security
     compile group: 'org.kohsuke', name: 'groovy-sandbox', version: '1.15'
 
+    jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.12@jar',
+                   'org.jenkins-ci.plugins:script-security:1.36@jar'
+
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+
     jenkinsTest 'org.jenkins-ci.plugins:javadoc:1.4@jar',
-                'org.jenkins-ci.main:jenkins-test-harness:2.32@jar'
+                'org.jenkins-ci.main:jenkins-test-harness:2.32@jar',
+                'org.jenkins-ci.plugins:junit:1.23@jar',
+                'org.jenkins-ci.plugins:ant:1.7@jar'
 }
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.6'
+version = '0.1.0'
 description = 'Axis for current capabilities of a Selenium Server'
 
 jenkinsPlugin {
     //coreVersion = '1.625.3'
     coreVersion = '2.38'
+    //coreVersion = '2.93'
     displayName = 'Selenium Capability Axis'
     url = 'https://wiki.jenkins-ci.org/display/JENKINS/Selenium+Axis+Plugin'
     gitHubUrl = 'https://github.com/jenkinsci/selenium-axis-plugin'
@@ -63,8 +66,3 @@ task wrapper(type: Wrapper) {
     gradleVersion = '3.5.1'
 }
 
-//gradle.projectsEvaluated {
-//    tasks.withType(Compile) {
-//        options.compilerArgs << "-Xlint:unchecked -noverify"
-//    }
-//}

@@ -172,17 +172,17 @@ class SeleniumAxis extends Axis {
 
             while (count > 0 && myCap.size() > 0) {
                 def current = myCap.pop()
-                //boolean differentEnough = true
+                boolean differentEnough = true
 
-                Binding binding = new Binding()
-                binding.setVariable('current', current)
-                binding.setVariable('selected', selected)
+                if( secureFilter.script != '') {
+                    Binding binding = new Binding()
+                    binding.setVariable('current', current)
+                    binding.setVariable('selected', selected)
 
-                println(secureFilter.script)
-
-                def differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
-
-                println(differentEnough.toString())
+                    differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
+                } else {
+                    differentEnough = defaultDifferent(current, selected)
+                }
 
                 if (differentEnough) {
                     selected << current
@@ -192,6 +192,18 @@ class SeleniumAxis extends Axis {
             }
             selected
         }
+
+        static boolean defaultDifferent(Item current, List<ItemList> selected) {
+            def different = true
+            selected.any {
+                if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
+                    different = false
+                    true
+                }
+            }
+            return different
+        }
+
         @Override
         boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             super.configure( req, formData)

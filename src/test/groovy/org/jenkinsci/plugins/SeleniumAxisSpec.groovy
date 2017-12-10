@@ -9,7 +9,6 @@ import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 import org.jsoup.Jsoup
 import spock.lang.Specification
-import spock.lang.Shared
 import org.junit.Rule
 import org.jvnet.hudson.test.JenkinsRule
 
@@ -19,18 +18,14 @@ class SeleniumAxisSpec extends Specification {
     @Rule
     JenkinsRule rule = new JenkinsRule()
 
-    @Shared SeleniumAxis.DescriptorImpl seleniumAxisDescriptor
+    MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
+        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
 
-    MatrixProject configure(seleniumFile, sauceLabsFile) {
         SeleniumHubCapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
         }
         SauceLabsCapabilityReader.metaClass.rawRead = {
             String s -> this.class.getResource(s).text
-        }
-
-        if (seleniumAxisDescriptor == null) {
-            seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
         }
 
         seleniumAxisDescriptor.server = seleniumFile
@@ -44,10 +39,12 @@ class SeleniumAxisSpec extends Specification {
         SeleniumAxis axis = new SeleniumAxis('TEST', false, '', new Secret(''),
                 seleniumAxisDescriptor.loadDefaultItems() )
 
-        axis.complexAxisItems[0].secureFilter = new SecureGroovyScript('true', true, Collections.<ClasspathEntry>emptyList() )
-        axis.complexAxisItems[0].secureFilter.configuring(ApprovalContext.create())
-        axis.complexAxisItems[0].advanced = true
-        axis.complexAxisItems[0].criteria = 'latest'
+        if(advanced) {
+            axis.complexAxisItems[0].secureFilter = new SecureGroovyScript('true', true, Collections.<ClasspathEntry> emptyList())
+            axis.complexAxisItems[0].secureFilter.configuring(ApprovalContext.create())
+            axis.complexAxisItems[0].advanced = true
+            axis.complexAxisItems[0].criteria = 'latest'
+        }
 
         def axl = new AxisList()
 
@@ -77,6 +74,21 @@ class SeleniumAxisSpec extends Specification {
         matrixProject
     }
 
+    def 'Dynamic-advanced'() {
+        given:
+        def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json', true)
+
+        when:
+        def build = matrixProject.scheduleBuild2(0).get()
+        def runs = build.runs
+
+        then:
+        build.logFile.text.contains('SUCCESS')
+        runs.every { it.logFile.text.contains('SUCCESS') }
+        runs.size() == 7
+    }
+
+
     def 'Dynamic'() {
         given:
         def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json')
@@ -94,6 +106,7 @@ class SeleniumAxisSpec extends Specification {
     def 'Dynamic Grid Gone'() {
         given:
         def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json')
+        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
 
         when:
         seleniumAxisDescriptor.setServer('null://')
@@ -108,17 +121,18 @@ class SeleniumAxisSpec extends Specification {
     def 'Dynamic Grid Arrived'() {
         given:
 
-        def sad = Jenkins.instance.getDescriptor(SeleniumAxis)
+        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
+
         def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
-        sad.setServer('/empty-grid-2.35.0.html')
+        seleniumAxisDescriptor.setServer('/empty-grid-2.35.0.html')
 
-        def axis = new SeleniumAxis('TEST', false, '', new Secret(''), sad.loadDefaultItems())
+        def axis = new SeleniumAxis('TEST', false, '', new Secret(''), seleniumAxisDescriptor.loadDefaultItems())
 
         axl.add(axis)
         matrixProject.setAxes(axl)
-        sad.setServer('/grid-2.25.0.html')
+        seleniumAxisDescriptor.setServer('/grid-2.25.0.html')
 
         def build = matrixProject.scheduleBuild2(0).get()
 

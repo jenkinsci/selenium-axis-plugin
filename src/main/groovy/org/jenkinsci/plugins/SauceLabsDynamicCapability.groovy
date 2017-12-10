@@ -44,7 +44,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         list
     }
     @DataBoundConstructor
-    SauceLabsDynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript securegroovyscript ) {
+    SauceLabsDynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript secureFilter ) {
         if (number.isNumber()) {
             this.number = number.toInteger()
         } else {
