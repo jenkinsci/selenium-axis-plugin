@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.saucelabs
 
 //stolen from here
 //http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Groovy

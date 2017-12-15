@@ -1,24 +1,25 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
 
 import org.jenkinsci.complex.axes.ItemList
+import org.jenkinsci.plugins.selenium.ICapabilityReader
 
 class Selenium {
 
-    ItemList<? extends SeleniumCapability> seleniumCapabilities = new ItemList<? extends SeleniumCapability>()
-    ItemList<? extends SeleniumCapability> seleniumLatest = new ItemList<? extends SeleniumCapability>()
-    ItemList<? extends SeleniumCapability> seleniumSelected = new ItemList<? extends SeleniumCapability>()
+    ItemList<? extends Capability> seleniumCapabilities = new ItemList<? extends Capability>()
+    ItemList<? extends Capability> seleniumLatest = new ItemList<? extends Capability>()
+    ItemList<? extends Capability> seleniumSelected = new ItemList<? extends Capability>()
 
     String seleniumVer
     List<String> browsers = []
     List<String> platforms = []
     List<String> versions = []
 
-    Selenium( ISeleniumCapabilityReader reader, Class<? extends SeleniumCapability> clazz  ) {
+    Selenium(ICapabilityReader reader, Class<? extends Capability> clazz  ) {
 
         Map<String, String> latestMap = [:]
 
         reader.capabilities.each {
-            SeleniumCapability n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')
+            Capability n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')
             if (seleniumCapabilities.contains(n)) {
                 seleniumCapabilities.get(seleniumCapabilities.indexOf(n)).incr()
                 if ( it.api_name == 'internet explorer' ) {
@@ -37,7 +38,7 @@ class Selenium {
                 }
             }
         }
-        seleniumLatest = new ItemList<? extends SeleniumCapability>(latestMap.values())
+        seleniumLatest = new ItemList<? extends Capability>(latestMap.values())
 
         seleniumLatest.each {
             if (['internet explorer', 'chrome', 'safari', 'firefox', 'microsoftedge'].contains(it.browserName)) {
@@ -65,7 +66,7 @@ class Selenium {
         Collections.sort(versions)
     }
 
-    List<? extends SeleniumCapability> getSeleniumCapability() {
+    List<? extends Capability> getSeleniumCapability() {
         seleniumCapabilities
     }
 

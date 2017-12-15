@@ -21,15 +21,18 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.selenium
 
 import hudson.Extension
 import net.sf.json.JSONObject
+import org.jenkinsci.plugins.saucelabs.Levenshtien
+import org.jenkinsci.plugins.hub.Selenium
+import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.hub.CapabilityRO
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter
 import jenkins.model.Jenkins
-import org.jenkinsci.complex.axes.Axis
 import org.jenkinsci.complex.axes.AxisDescriptor
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
@@ -39,14 +42,14 @@ import org.kohsuke.stapler.StaplerRequest
 import hudson.model.Descriptor.FormException
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 
-class SeleniumAxis extends Axis {
+class Axis extends org.jenkinsci.complex.axes.Axis {
     Boolean slOverride
     String slName
     Secret slPassword
 
     @DataBoundConstructor
-    SeleniumAxis(String name, Boolean slOverride, String slName, Secret slPassword,
-                 List<? extends Item> seleniumCapabilities) {
+    Axis(String name, Boolean slOverride, String slName, Secret slPassword,
+         List<? extends Item> seleniumCapabilities) {
         super(name, seleniumCapabilities)
 
         this.slOverride = slOverride
@@ -54,8 +57,8 @@ class SeleniumAxis extends Axis {
         this.slPassword = slPassword
     }
 
-    List<? extends SeleniumCapability> getSeleniumCapabilities() {
-        this.complexAxisItems as List<? extends SeleniumCapability>
+    List<? extends Capability> getSeleniumCapabilities() {
+        this.complexAxisItems as List<? extends Capability>
     }
 
     String getURL(String which) {
@@ -103,7 +106,7 @@ class SeleniumAxis extends Axis {
 
         //don't serialize this
         @SuppressWarnings('UnnecessaryTransientModifier')
-        transient Map<String, List<? extends SeleniumCapability>> sauceLabsCapabilities
+        transient Map<String, List<? extends Capability>> sauceLabsCapabilities
 
         List<ItemDescriptor> axisItemTypes() {
             def ait = Jenkins.instance.<Item,ItemDescriptor>getDescriptorList(Item)
@@ -121,14 +124,14 @@ class SeleniumAxis extends Axis {
             ret
         }
 
-        List<? extends SeleniumCapability> getSauceLabsCapabilities(String which) {
+        List<? extends Capability> getSauceLabsCapabilities(String which) {
             if (sauceLabs) {
                 try {
                     if (sauceLabsCapabilities == null) {
-                        SauceLabsCapabilityReader reader = new SauceLabsCapabilityReader()
+                        ICapabilityReader reader = new org.jenkinsci.plugins.saucelabs.CapabilityReader()
                         reader.loadCapabilities(sauceLabsAPIURL)
 
-                        Selenium sel = new Selenium(reader, SauceLabsCapabilityRO)
+                        Selenium sel = new Selenium(reader, org.jenkinsci.plugins.saucelabs.CapabilityRO)
                         sauceLabsCapabilities = [:]
 
                         sauceLabsCapabilities['latest'] = sel.seleniumLatest
@@ -145,22 +148,23 @@ class SeleniumAxis extends Axis {
             }
         }
 
-        List<? extends SeleniumCapability> getSeleniumCapabilities() {
+        List<? extends Capability> getSeleniumCapabilities() {
             try {
                 //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
-                SeleniumHubCapabilityReader reader = new SeleniumHubCapabilityReader()
+                ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
+
                 reader.loadCapabilities(server)
 
-                Selenium sel = new Selenium(reader, SeleniumCapabilityRO)
+                Selenium sel = new Selenium(reader, CapabilityRO)
                 sel.seleniumLatest
 
             } catch (ex) {
                 ItemList.emptyList()
             }
         }
-        List<? extends SeleniumCapability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+        List<? extends Capability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
 
-            ItemList<? extends SeleniumCapability> selected = new ItemList<? extends SeleniumCapability>()
+            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
             def cap = getSauceLabsCapabilities(which)
             def myCap = cap.clone()
 

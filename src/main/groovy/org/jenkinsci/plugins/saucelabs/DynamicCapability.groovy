@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.saucelabs
 
 import hudson.Extension
 import hudson.util.ListBoxModel
@@ -6,13 +6,15 @@ import hudson.util.ListBoxModel.Option
 import hudson.util.FormValidation
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
+import org.jenkinsci.plugins.saucelabs.CapabilityRO
+import org.jenkinsci.plugins.selenium.Exception
 import org.kohsuke.stapler.DataBoundConstructor
 import org.kohsuke.stapler.QueryParameter
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 
-class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
+class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
 
     Integer number = 3
     Boolean advanced = false
@@ -23,11 +25,11 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
 
     Boolean override = false
 
-    SauceLabsDynamicCapability() {
+    DynamicCapability() {
         super([])
     }
 
-    SauceLabsDynamicCapability( List<SauceLabsCapabilityRO> sauceLabsCapabilities) {
+    DynamicCapability(List<org.jenkinsci.plugins.saucelabs.CapabilityRO> sauceLabsCapabilities) {
         super( sauceLabsCapabilities)
     }
 
@@ -44,7 +46,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         list
     }
     @DataBoundConstructor
-    SauceLabsDynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript secureFilter ) {
+    DynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript secureFilter ) {
         if (number.isNumber()) {
             this.number = number.toInteger()
         } else {
@@ -63,7 +65,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         }
     }
 
-    void setSauceLabsCapabilities(List<SeleniumCapabilityRO> sc) {
+    void setSauceLabsCapabilities(List<CapabilityRO> sc) {
         setComplexAxisItems(sc)
     }
 
@@ -86,11 +88,11 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
         this
     }
 
-    @Extension static class DescriptorImpl extends SeleniumDynamicCapability.DescriptorImpl {
+    @Extension static class DescriptorImpl extends org.jenkinsci.plugins.hub.DynamicCapability.DescriptorImpl {
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
-            SauceLabsDynamicCapability sdc = new SauceLabsDynamicCapability(loadDefaultItems())
+            DynamicCapability sdc = new DynamicCapability(loadDefaultItems())
 
             cai.add(sdc)
 
@@ -139,7 +141,7 @@ class SauceLabsDynamicCapability extends  SeleniumDynamicCapability {
                 String s = topLevelDescriptor.getRandomSauceLabsCapabilities(criteria, number, secureFilter)
 
                 return FormValidation.ok(s)
-            } catch (SeleniumException e) {
+            } catch (Exception e) {
                 return FormValidation.error('Client error : ' + e.message)
             }
         }

@@ -1,22 +1,24 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.saucelabs
 
 import groovy.json.JsonSlurper
+import org.jenkinsci.plugins.selenium.Exception
+import org.jenkinsci.plugins.selenium.ICapabilityReader
 
 /**
  * Created by jeremymarshall on 29/08/2014.
  */
 
-class SauceLabsCapabilityReader implements ISeleniumCapabilityReader {
+class CapabilityReader implements ICapabilityReader {
     Object capabilities
 
     @Override
-    void loadCapabilities(String url) throws SeleniumException {
+    void loadCapabilities(String url) throws Exception {
         try {
             String payload = rawRead(url)
             JsonSlurper slurper = new JsonSlurper()
             capabilities = slurper.parseText(payload)
         } catch (IllegalArgumentException e) {
-            throw new SeleniumException( e.message )
+            throw new Exception( e.message )
         }
     }
 

@@ -1,16 +1,20 @@
 package org.jenkinsci.plugins
 
+import org.jenkinsci.plugins.hub.Selenium
+import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.saucelabs.CapabilityReader
+import org.jenkinsci.plugins.selenium.Exception
 import spock.lang.Specification
 
 class SauceLabsSpec extends Specification {
 
     def 'Available'() {
-        SauceLabsCapabilityReader.metaClass.rawRead = { String s -> this.class.getResource(s).text }
+        CapabilityReader.metaClass.rawRead = { String s -> this.class.getResource(s).text }
 
         when:
-        def reader = new SauceLabsCapabilityReader()
+        def reader = new CapabilityReader()
         reader.loadCapabilities('/saucelabs_full.json')
-        def sel = new Selenium(reader, SeleniumCapability)
+        def sel = new Selenium(reader, Capability)
 
         then:
         assert sel.seleniumCapabilities.size() == 330
@@ -19,15 +23,15 @@ class SauceLabsSpec extends Specification {
     }
 
     def 'No Connection'() {
-        SauceLabsCapabilityReader.metaClass.rawRead = { String s -> this.class.getResource(s).text }
+        CapabilityReader.metaClass.rawRead = { String s -> this.class.getResource(s).text }
 
         when:
-        def reader = new SauceLabsCapabilityReader()
+        def reader = new CapabilityReader()
         reader.loadCapabilities('/saucelabs_noaccess.json')
-        new Selenium(reader, SeleniumCapability)
+        new Selenium(reader, Capability)
 
         then:
-        thrown(SeleniumException)
+        thrown(Exception)
     }
 
 }

@@ -1,19 +1,22 @@
 package org.jenkinsci.plugins
 
+import org.jenkinsci.plugins.hub.Selenium
+import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.hub.CapabilityReader
 import org.jsoup.Jsoup
 import spock.lang.Specification
 
 class Selenium_v3_8_1 extends Specification {
 
     def 'Tests'() {
-        SeleniumHubCapabilityReader.metaClass.rawRead = {
+        CapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
         }
 
         when:
-        def reader = new SeleniumHubCapabilityReader()
+        def reader = new CapabilityReader()
         reader.loadCapabilities('/grid-3.8.1.html')
-        def sel = new Selenium(reader, SeleniumCapability)
+        def sel = new Selenium(reader, Capability)
 
         then:
         assert sel.seleniumCapabilities.size() == 2

@@ -1,5 +1,7 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
 
+import org.jenkinsci.plugins.selenium.ICapabilityReader
+import org.jenkinsci.plugins.selenium.Exception
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Document
@@ -10,10 +12,10 @@ import java.util.regex.Matcher
 /**
  * Created by jeremymarshall on 29/08/2014.
  */
-class SeleniumHubCapabilityReader implements ISeleniumCapabilityReader {
+class CapabilityReader implements ICapabilityReader {
     List<Map> capabilities = []
     @Override
-    void loadCapabilities(String source) throws SeleniumException {
+    void loadCapabilities(String source) throws Exception {
         try {
             Document document = rawRead(source)
 
@@ -29,7 +31,7 @@ class SeleniumHubCapabilityReader implements ISeleniumCapabilityReader {
                 capabilities << convert(capability.attr('title'))
             }
         } catch (ex) {
-            throw new SeleniumException("Didn't find a server at ${source}")
+            throw new Exception("Didn't find a server at ${source}")
         }
     }
 

@@ -1,13 +1,13 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
 
 import hudson.Extension
 import org.kohsuke.stapler.DataBoundConstructor
 import org.jenkinsci.complex.axes.ItemDescriptor
 
-class SeleniumCapabilityRO extends SeleniumCapability {
+class CapabilityRO extends Capability {
 
     @DataBoundConstructor
-    SeleniumCapabilityRO(String browserName, String platformName, String browserVersion, String capType) {
+    CapabilityRO(String browserName, String platformName, String browserVersion, String capType) {
         super(browserName, platformName, browserVersion, capType)
     }
 

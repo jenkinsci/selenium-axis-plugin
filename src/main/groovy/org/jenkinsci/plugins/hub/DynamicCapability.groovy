@@ -1,6 +1,8 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
 
 import hudson.Extension
+import org.jenkinsci.plugins.selenium.Axis
+import org.jenkinsci.plugins.selenium.Exception
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.model.Descriptor
 import jenkins.model.Jenkins
@@ -9,22 +11,22 @@ import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.ContainerDescriptor
 
-class SeleniumDynamicCapability extends  Container {
+class DynamicCapability extends  Container {
 
-    SeleniumDynamicCapability() {
+    DynamicCapability() {
         super( [] )
     }
 
-    List<SeleniumCapabilityRO> getSeleniumCapabilities() {
+    List<CapabilityRO> getSeleniumCapabilities() {
         complexAxisItems
     }
 
-    void setSeleniumCapabilities(List<SeleniumCapabilityRO> sc) {
+    void setSeleniumCapabilities(List<CapabilityRO> sc) {
         setComplexAxisItems(sc)
     }
 
     @DataBoundConstructor
-    SeleniumDynamicCapability(List<SeleniumCapabilityRO> seleniumCapabilities) {
+    DynamicCapability(List<CapabilityRO> seleniumCapabilities) {
         super( seleniumCapabilities)
     }
 
@@ -37,7 +39,7 @@ class SeleniumDynamicCapability extends  Container {
         List<? extends Item> sc = descriptor.loadDefaultItems()
 
         if (sc.size() == 0) {
-            throw (new SeleniumException('No capabilities detected'))
+            throw (new Exception('No capabilities detected'))
         }
         setSeleniumCapabilities(sc)
 
@@ -59,7 +61,7 @@ class SeleniumDynamicCapability extends  Container {
 
         //so we need this to get at the name of the selenium server in the global config
         static Descriptor<? extends AxisDescriptor> getTopLevelDescriptor() {
-            SeleniumAxis.DescriptorImpl sad = Jenkins.instance.getDescriptor(SeleniumAxis)
+            Axis.DescriptorImpl sad = Jenkins.instance.getDescriptor(Axis)
             sad.load()
 
             sad
@@ -67,7 +69,7 @@ class SeleniumDynamicCapability extends  Container {
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
-            SeleniumDynamicCapability sdc = new SeleniumDynamicCapability(loadDefaultItems())
+            DynamicCapability sdc = new DynamicCapability(loadDefaultItems())
 
             cai.add(sdc)
 

@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins
 
+import org.jenkinsci.plugins.saucelabs.Levenshtien
 import spock.lang.Specification
 
 class LevenshtienSpec extends Specification {

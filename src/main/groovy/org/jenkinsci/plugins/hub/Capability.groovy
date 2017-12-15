@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
 
 import hudson.Extension
 import hudson.util.ListBoxModel
@@ -7,7 +7,7 @@ import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemDescriptor
 import org.kohsuke.stapler.QueryParameter
 
-class SeleniumCapability extends  Item implements Comparable {
+class Capability extends  Item implements Comparable {
 
     String browserName
     String platformName
@@ -16,7 +16,7 @@ class SeleniumCapability extends  Item implements Comparable {
     @SuppressWarnings('UnnecessaryTransientModifier')
     transient Integer maxInstances
 
-    SeleniumCapability() {
+    Capability() {
         browserName = 'Any'
         platformName = 'Any'
         browserVersion = 'Any'
@@ -24,7 +24,7 @@ class SeleniumCapability extends  Item implements Comparable {
     }
 
     @DataBoundConstructor
-    SeleniumCapability(String browserName, String platformName, String browserVersion, String capType) {
+    Capability(String browserName, String platformName, String browserVersion, String capType) {
         this.capType = capType ?: 'SEL'
         this.browserName = browserName ?: 'Any'
         this.platformName = platformName ?: 'Any'
@@ -32,8 +32,8 @@ class SeleniumCapability extends  Item implements Comparable {
         this.maxInstances = 1
     }
 
-    SeleniumCapability(String browserName, String platformName, String browserVersion) {
-        SeleniumCapability(browserName, platformName, browserVersion, 'SEL')
+    Capability(String browserName, String platformName, String browserVersion) {
+        Capability(browserName, platformName, browserVersion, 'SEL')
     }
 
     String getCapType() {

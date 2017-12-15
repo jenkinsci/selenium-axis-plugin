@@ -4,9 +4,13 @@ import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
 import hudson.util.Secret
 import jenkins.model.Jenkins
+import org.jenkinsci.plugins.hub.Selenium
+import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.saucelabs.CapabilityReader
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
+import org.jenkinsci.plugins.selenium.Axis
 import org.jsoup.Jsoup
 import spock.lang.Specification
 import org.junit.Rule
@@ -19,12 +23,12 @@ class SeleniumAxisSpec extends Specification {
     JenkinsRule rule = new JenkinsRule()
 
     MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
-        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
+        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
 
-        SeleniumHubCapabilityReader.metaClass.rawRead = {
+        org.jenkinsci.plugins.hub.CapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
         }
-        SauceLabsCapabilityReader.metaClass.rawRead = {
+        CapabilityReader.metaClass.rawRead = {
             String s -> this.class.getResource(s).text
         }
 
@@ -36,7 +40,7 @@ class SeleniumAxisSpec extends Specification {
 
         def matrixProject = rule.createProject(MatrixProject, "m")
 
-        SeleniumAxis axis = new SeleniumAxis('TEST', false, '', new Secret(''),
+        Axis axis = new Axis('TEST', false, '', new Secret(''),
                 seleniumAxisDescriptor.loadDefaultItems() )
 
         if(advanced) {
@@ -58,13 +62,13 @@ class SeleniumAxisSpec extends Specification {
 
         def matrixProject = rule.createProject(MatrixProject, "m")
 
-        def sc = new SeleniumCapability()
-        def sc2 = new SeleniumCapability('Browser', 'Platform', 'Version', 'SEL')
+        def sc = new Capability()
+        def sc2 = new Capability('Browser', 'Platform', 'Version', 'SEL')
         def scont = []
         scont.add(sc)
         scont.add(sc2)
 
-        def axis = new SeleniumAxis('TEST', false, '', new Secret(''), scont)
+        def axis = new Axis('TEST', false, '', new Secret(''), scont)
 
         def axl = new AxisList()
 
@@ -106,7 +110,7 @@ class SeleniumAxisSpec extends Specification {
     def 'Dynamic Grid Gone'() {
         given:
         def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json')
-        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
+        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
 
         when:
         seleniumAxisDescriptor.setServer('null://')
@@ -114,21 +118,21 @@ class SeleniumAxisSpec extends Specification {
         def runs = build.runs
 
         then:
-        build.logFile.text.contains('SeleniumException')
+        build.logFile.text.contains('selenium.Exception')
         runs.size() == 0
     }
 
     def 'Dynamic Grid Arrived'() {
         given:
 
-        SeleniumAxis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(SeleniumAxis)
+        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
 
         def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
         seleniumAxisDescriptor.setServer('/empty-grid-2.35.0.html')
 
-        def axis = new SeleniumAxis('TEST', false, '', new Secret(''), seleniumAxisDescriptor.loadDefaultItems())
+        def axis = new Axis('TEST', false, '', new Secret(''), seleniumAxisDescriptor.loadDefaultItems())
 
         axl.add(axis)
         matrixProject.setAxes(axl)
@@ -149,7 +153,7 @@ class SeleniumAxisSpec extends Specification {
         def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
-        def axis = new SeleniumAxis('TEST', false, '', new Secret(''), null)
+        def axis = new Axis('TEST', false, '', new Secret(''), null)
 
         axl.add(axis)
         matrixProject.setAxes(axl)

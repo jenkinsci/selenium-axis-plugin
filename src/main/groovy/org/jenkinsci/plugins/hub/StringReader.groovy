@@ -1,17 +1,20 @@
-package org.jenkinsci.plugins
+package org.jenkinsci.plugins.hub
+
+import org.jenkinsci.plugins.selenium.ICapabilityReader
+import org.jenkinsci.plugins.selenium.Exception
 
 /**
  * Created by jeremymarshall on 29/08/2014.
  */
 
-class SeleniumStringReader implements ISeleniumCapabilityReader {
+class StringReader implements ICapabilityReader {
     Object capabilities = []
 
     @Override
-    void loadCapabilities(String raw) throws SeleniumException {
+    void loadCapabilities(String raw) throws Exception {
 
         if (raw == '') {
-            throw new SeleniumException('No Capabilities')
+            throw new Exception('No Capabilities')
         }
 
         raw.splitEachLine  ('-') { item ->

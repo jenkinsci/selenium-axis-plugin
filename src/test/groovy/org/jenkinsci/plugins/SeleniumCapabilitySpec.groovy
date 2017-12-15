@@ -1,12 +1,13 @@
 package org.jenkinsci.plugins
 
+import org.jenkinsci.plugins.hub.Capability
 import spock.lang.Specification
 
 class SeleniumCapabilitySpec extends Specification {
 
     def 'Create Param'() {
 
-        def selCap = new SeleniumCapability('Browser', 'Platform', 'Version', 'SEL')
+        def selCap = new Capability('Browser', 'Platform', 'Version', 'SEL')
 
         expect:
         selCap.browserName.matches('Browser')
@@ -16,7 +17,7 @@ class SeleniumCapabilitySpec extends Specification {
 
     def 'Create No Param'() {
 
-        def selCap = new SeleniumCapability()
+        def selCap = new Capability()
 
         expect:
         selCap.browserName.matches('Any')

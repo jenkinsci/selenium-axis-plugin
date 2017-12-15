@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.SeleniumAxis
+package org.jenkinsci.plugins.selenium.Axis
 /*
 This Groovy script is used to produce the global configuration option.
 
