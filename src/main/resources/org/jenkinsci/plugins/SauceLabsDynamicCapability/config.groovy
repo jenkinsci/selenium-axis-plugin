@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.SauceLabsDynamicCapability.Container
+package org.jenkinsci.plugins.saucelabs.DynamicCapability
 /*
 This Groovy script is used to produce the global configuration option.
 
