@@ -1,6 +1,9 @@
 package org.jenkinsci.plugins.hub
 
 import hudson.Extension
+import hudson.init.InitMilestone
+import hudson.init.Initializer
+import hudson.model.Items
 import hudson.util.ListBoxModel
 import org.kohsuke.stapler.DataBoundConstructor
 import org.jenkinsci.complex.axes.Item
@@ -21,6 +24,11 @@ class Capability extends  Item implements Comparable {
         platformName = 'Any'
         browserVersion = 'Any'
         maxInstances = 1
+    }
+
+    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    public static void addAliases() {
+        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.SeleniumCapability", Capability);
     }
 
     @DataBoundConstructor

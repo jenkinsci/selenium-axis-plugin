@@ -1,6 +1,9 @@
 package org.jenkinsci.plugins.saucelabs
 
 import hudson.Extension
+import hudson.init.InitMilestone
+import hudson.init.Initializer
+import hudson.model.Items
 import hudson.util.ListBoxModel
 import hudson.util.ListBoxModel.Option
 import hudson.util.FormValidation
@@ -45,6 +48,12 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
             seleniumCapabilities.each { list.add(it.toString()) }
         list
     }
+
+    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    public static void addAliases() {
+        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.SauceLabsDynamicCapability", DynamicCapability);
+    }
+
     @DataBoundConstructor
     DynamicCapability(String number, Boolean advanced, String criteria, SecureGroovyScript secureFilter ) {
         if (number.isNumber()) {

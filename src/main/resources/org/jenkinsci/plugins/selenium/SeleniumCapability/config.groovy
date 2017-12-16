@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.SeleniumCapabilityRO
+package org.jenkinsci.plugins.hub.Capability
 /*
 This Groovy script is used to produce the global configuration option.
 
@@ -12,20 +12,17 @@ tags they use. Views are always organized according to its owner class,
 so it should be straightforward to find them.
 */
 namespace(lib.FormTagLib).with {
-    block{
-        table{
-            tr{
-                td{
-                    readOnlyTextbox(field:"platformName")
-                }
-                td{
-                    readOnlyTextbox (field:"browserName")
-                }
-                td{
-                    readOnlyTextbox (field:"browserVersion")
-                }
-            }
-        }
+    entry(title:_("Entry Type"), field:"capType") {
+        select( default: 'SEL')
+    }
+    entry(title:_("Platform Name"), field:"platformName") {
+        textbox( default:"Any")
+    }
+    entry(title:_("Browser Name"), field:"browserName") {
+        textbox( default:"Any")
+    }
+    entry(title:_("Browser Version"), field:"browserVersion") {
+        textbox( default:"Any")
     }
 }
 

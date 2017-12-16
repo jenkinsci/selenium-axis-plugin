@@ -24,6 +24,9 @@
 package org.jenkinsci.plugins.selenium
 
 import hudson.Extension
+import hudson.init.InitMilestone
+import hudson.init.Initializer
+import hudson.model.Items
 import net.sf.json.JSONObject
 import org.jenkinsci.plugins.saucelabs.Levenshtien
 import org.jenkinsci.plugins.hub.Selenium
@@ -46,6 +49,11 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
     Boolean slOverride
     String slName
     Secret slPassword
+
+    @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    public static void addAliases() {
+        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.SeleniumAxis", Axis);
+    }
 
     @DataBoundConstructor
     Axis(String name, Boolean slOverride, String slName, Secret slPassword,
