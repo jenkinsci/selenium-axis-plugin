@@ -4,8 +4,15 @@ import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
+import hudson.util.FormValidation
+import net.sf.json.JSONObject
+import org.jenkinsci.complex.axes.ItemList
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.selenium.Axis
+import org.jenkinsci.plugins.selenium.Capability
 import org.jenkinsci.plugins.selenium.Exception
+import org.jenkinsci.plugins.selenium.ICapability
+import org.jenkinsci.plugins.selenium.ICapabilityReader
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.model.Descriptor
 import jenkins.model.Jenkins
@@ -13,6 +20,9 @@ import org.jenkinsci.complex.axes.AxisDescriptor
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.ContainerDescriptor
+import org.kohsuke.stapler.QueryParameter
+import org.kohsuke.stapler.StaplerRequest
+import hudson.model.Descriptor.FormException
 
 class DynamicCapability extends  Container {
 
@@ -65,7 +75,8 @@ class DynamicCapability extends  Container {
         list
     }
 
-    @Extension static class DescriptorImpl extends ContainerDescriptor {
+    @Extension static class DescriptorImpl extends ContainerDescriptor implements ICapability{
+        String server = 'http://localhost:4444'
 
         //so we need this to get at the name of the selenium server in the global config
         static Descriptor<? extends AxisDescriptor> getTopLevelDescriptor() {
@@ -83,10 +94,47 @@ class DynamicCapability extends  Container {
 
             cai
         }
+        @Override
+        boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            super.configure( req, formData)
+            //capabilities = null
+            true
+        }
+
+        FormValidation doCheckServer(@QueryParameter String value) {
+            if (value.isEmpty()) {
+                return FormValidation.error('You must provide an URL.')
+            }
+
+            try {
+                new URL(value)
+            } catch (final MalformedURLException e) {
+                return FormValidation.error('This is not a valid URL.')
+            }
+            FormValidation.ok()
+        }
+
+        List<? extends Capability> getCapabilities(String which) {
+            try {
+                //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
+                ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
+
+                reader.loadCapabilities(server)
+
+                Selenium sel = new Selenium(reader, CapabilityRO)
+                sel.seleniumLatest
+
+            } catch (ex) {
+                ItemList.emptyList()
+            }
+        }
+        List<? extends Capability> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+            getCapabilities(which)
+        }
 
         @Override
         List<? extends Item> loadDefaultItems() {
-            topLevelDescriptor.seleniumCapabilities
+            getCapabilities('')
         }
 
         String displayName = 'Detected Selenium Capability'

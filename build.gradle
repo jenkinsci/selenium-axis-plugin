@@ -32,7 +32,8 @@ dependencies {
     compile group: 'org.kohsuke', name: 'groovy-sandbox', version: '1.15'
 
     jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.12@jar',
-                   'org.jenkins-ci.plugins:script-security:1.36@jar'
+                   'org.jenkins-ci.plugins:script-security:1.36@jar',
+                   'org.jenkins-ci.plugins:structs:1.10@jar'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 

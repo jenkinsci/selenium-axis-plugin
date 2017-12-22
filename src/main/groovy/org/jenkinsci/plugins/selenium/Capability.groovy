@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.hub
+package org.jenkinsci.plugins.selenium
 
 import hudson.Extension
 import hudson.init.InitMilestone

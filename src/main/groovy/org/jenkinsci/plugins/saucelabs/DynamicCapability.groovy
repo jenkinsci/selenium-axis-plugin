@@ -7,18 +7,26 @@ import hudson.model.Items
 import hudson.util.ListBoxModel
 import hudson.util.ListBoxModel.Option
 import hudson.util.FormValidation
+import hudson.util.Secret
+import net.sf.json.JSONObject
+import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
+import org.jenkinsci.plugins.hub.Selenium
 import org.jenkinsci.plugins.saucelabs.CapabilityRO
+import org.jenkinsci.plugins.selenium.Capability
 import org.jenkinsci.plugins.selenium.Exception
+import org.jenkinsci.plugins.selenium.ICapability
+import org.jenkinsci.plugins.selenium.ICapabilityReader
 import org.kohsuke.stapler.DataBoundConstructor
 import org.kohsuke.stapler.QueryParameter
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
+import org.kohsuke.stapler.StaplerRequest
+import hudson.model.Descriptor.FormException
 
-class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
-
+class DynamicCapability extends Container {
     Integer number = 3
     Boolean advanced = false
     String criteria
@@ -32,20 +40,20 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
         super([])
     }
 
-    DynamicCapability(List<org.jenkinsci.plugins.saucelabs.CapabilityRO> sauceLabsCapabilities) {
-        super( sauceLabsCapabilities)
+    DynamicCapability(List<org.jenkinsci.plugins.saucelabs.CapabilityRO> capabilities) {
+        super( capabilities)
     }
 
     @Override
     List<String> rebuild(List<String> list) {
         if (this.advanced) {
-            setSeleniumCapabilities(descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
+            setComplexAxisItems(descriptor.getRandomCapabilities(
                     this.criteria, this.number, this.secureFilter))
         } else {
-            setSeleniumCapabilities(descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
+            setComplexAxisItems(descriptor.getRandomCapabilities(
                     'latest', this.number, new SecureGroovyScript('', true)))
         }
-            seleniumCapabilities.each { list.add(it.toString()) }
+            getComplexAxisItems().each { list.add(it.toString()) }
         list
     }
 
@@ -67,7 +75,7 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
         this.secureFilter.configuringWithKeyItem()
 
         try {
-            this.complexAxisItems = descriptor.topLevelDescriptor.getRandomSauceLabsCapabilities(
+            this.complexAxisItems = descriptor.getRandomCapabilities(
                     this.criteria, this.number, this.secureFilter)
         } catch (Exception) {
             this.complexAxisItems = ItemList.emptyList()
@@ -97,7 +105,16 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
         this
     }
 
-    @Extension static class DescriptorImpl extends org.jenkinsci.plugins.hub.DynamicCapability.DescriptorImpl {
+    @Extension static class DescriptorImpl extends org.jenkinsci.plugins.hub.DynamicCapability.DescriptorImpl implements ICapability{
+        Boolean sauceLabs = false
+        String sauceLabsName
+        Secret sauceLabsPwd
+        String sauceLabsAPIURL = 'http://saucelabs.com/rest/v1/info/platforms/webdriver'
+        String sauceLabsURL = 'http://ondemand.saucelabs.com:80'
+
+        //don't serialize this
+        @SuppressWarnings('UnnecessaryTransientModifier')
+        transient Map<String, List<? extends Capability>> capabilities
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
@@ -107,6 +124,39 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
 
             cai
         }
+        @Override
+        boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+            super.configure( req, formData)
+            sauceLabsCapabilities = null
+            true
+        }
+
+
+        FormValidation doCheckSauceLabsURL(@QueryParameter String value) {
+            if (value.isEmpty()) {
+                return FormValidation.error('You must provide an URL.')
+            }
+
+            try {
+                new URL(value)
+            } catch (final MalformedURLException e) {
+                return FormValidation.error('This is not a valid URL.')
+            }
+            FormValidation.ok()
+        }
+
+        FormValidation doCheckSauceLabsAPIURL(@QueryParameter String value) {
+            if (value.isEmpty()) {
+                return FormValidation.error('You must provide an URL.')
+            }
+
+            try {
+                new URL(value)
+            } catch (final MalformedURLException e) {
+                return FormValidation.error('This is not a valid URL.')
+            }
+            FormValidation.ok()
+        }
 
         @Override
         List<? extends Item> loadDefaultItems() {
@@ -114,7 +164,78 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
             ItemList.emptyList()
         }
 
-        String displayName = 'Detected SauceLibs Capability'
+        String displayName = 'Detected SauceLabs Capability'
+
+
+        List<? extends Capability> getCapabilities(String which) {
+            if (sauceLabs) {
+                try {
+                    if (capabilities == null) {
+                        ICapabilityReader reader = new org.jenkinsci.plugins.saucelabs.CapabilityReader()
+                        reader.loadCapabilities(sauceLabsAPIURL)
+
+                        Selenium sel = new Selenium(reader, org.jenkinsci.plugins.saucelabs.CapabilityRO)
+                        capabilities = [:]
+
+                        capabilities['latest'] = sel.seleniumLatest
+                        capabilities['all'] = sel.seleniumCapabilities
+                        capabilities['web'] = sel.seleniumSelected
+                    }
+                    return capabilities[which]
+
+                } catch (ex) {
+                    ItemList.emptyList()
+                }
+            } else {
+                ItemList.emptyList()
+            }
+        }
+
+        List<? extends Capability> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+
+            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
+            def cap = getCapabilities(which)
+            def myCap = cap.clone()
+
+            Collections.shuffle(myCap)
+
+            if (myCap.size() == 0) {
+                return ItemList.emptyList()
+            }
+
+            while (count > 0 && myCap.size() > 0) {
+                def current = myCap.pop()
+                boolean differentEnough = true
+
+                if( secureFilter.script != '') {
+                    Binding binding = new Binding()
+                    //binding.setVariable('current', current)
+                    //binding.setVariable('selected', selected)
+
+                    differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
+                } else {
+                    differentEnough = defaultDifferent(current, selected)
+                }
+
+                if (differentEnough) {
+                    selected << current
+                    count--
+                }
+
+            }
+            selected
+        }
+
+        static boolean defaultDifferent(Item current, List<ItemList> selected) {
+            def different = true
+            selected.any {
+                if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
+                    different = false
+                    true
+                }
+            }
+            return different
+        }
 
         FormValidation doCheckSlNum(@QueryParameter String value) {
             if (value.isEmpty()) {
@@ -147,7 +268,7 @@ class DynamicCapability extends  org.jenkinsci.plugins.hub.DynamicCapability {
                                         @QueryParameter('criteria') final String criteria,
                                         @QueryParameter('number') final Integer number) throws Exception {
             try {
-                String s = topLevelDescriptor.getRandomSauceLabsCapabilities(criteria, number, secureFilter)
+                String s = getRandomCapabilities(criteria, number, secureFilter)
 
                 return FormValidation.ok(s)
             } catch (Exception e) {

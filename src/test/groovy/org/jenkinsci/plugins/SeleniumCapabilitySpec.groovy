@@ -1,6 +1,6 @@
 package org.jenkinsci.plugins
 
-import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.selenium.Capability
 import spock.lang.Specification
 
 class SeleniumCapabilitySpec extends Specification {

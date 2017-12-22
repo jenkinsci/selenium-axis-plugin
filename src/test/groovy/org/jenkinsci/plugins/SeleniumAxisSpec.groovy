@@ -4,14 +4,15 @@ import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
 import hudson.util.Secret
 import jenkins.model.Jenkins
-import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.hub.DynamicCapability
+import org.jenkinsci.plugins.selenium.Capability
 import org.jenkinsci.plugins.saucelabs.CapabilityReader
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
 import org.jenkinsci.plugins.selenium.Axis
 import org.jsoup.Jsoup
+import spock.lang.Shared
 import spock.lang.Specification
 import org.junit.Rule
 import org.jvnet.hudson.test.JenkinsRule
@@ -21,9 +22,13 @@ class SeleniumAxisSpec extends Specification {
 
     @Rule
     JenkinsRule rule = new JenkinsRule()
+    @Shared sauceLabsDescriptor, hubDescriptor, seleniumAxisDescriptor
 
     MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
-        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
+
+        sauceLabsDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.saucelabs.DynamicCapability)
+        hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
+        seleniumAxisDescriptor = Jenkins.instance.getDescriptor(Axis)
 
         org.jenkinsci.plugins.hub.CapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
@@ -32,11 +37,12 @@ class SeleniumAxisSpec extends Specification {
             String s -> this.class.getResource(s).text
         }
 
-        seleniumAxisDescriptor.server = seleniumFile
-        seleniumAxisDescriptor.sauceLabs = true
-        seleniumAxisDescriptor.sauceLabsName = 'test'
-        seleniumAxisDescriptor.sauceLabsPwd = new Secret('pass')
-        seleniumAxisDescriptor.sauceLabsAPIURL = sauceLabsFile
+        hubDescriptor.server = seleniumFile
+
+        sauceLabsDescriptor.sauceLabs = true
+        sauceLabsDescriptor.sauceLabsName = 'test'
+        sauceLabsDescriptor.sauceLabsPwd = new Secret('pass')
+        sauceLabsDescriptor.sauceLabsAPIURL = sauceLabsFile
 
         def matrixProject = rule.createProject(MatrixProject, "m")
 
@@ -113,7 +119,7 @@ class SeleniumAxisSpec extends Specification {
         Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
 
         when:
-        seleniumAxisDescriptor.setServer('null://')
+        hubDescriptor.setServer('null://')
         def build = matrixProject.scheduleBuild2(0).get()
         def runs = build.runs
 
@@ -130,13 +136,13 @@ class SeleniumAxisSpec extends Specification {
         def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
-        seleniumAxisDescriptor.setServer('/empty-grid-2.35.0.html')
+        hubDescriptor.setServer('/empty-grid-2.35.0.html')
 
         def axis = new Axis('TEST', false, '', new Secret(''), seleniumAxisDescriptor.loadDefaultItems())
 
         axl.add(axis)
         matrixProject.setAxes(axl)
-        seleniumAxisDescriptor.setServer('/grid-2.25.0.html')
+        hubDescriptor.setServer('/grid-2.25.0.html')
 
         def build = matrixProject.scheduleBuild2(0).get()
 

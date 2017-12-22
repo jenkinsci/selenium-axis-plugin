@@ -14,28 +14,24 @@ class SeleniumDynamicCapabilitySpec extends Specification {
     @Rule
     JenkinsRule rule = new JenkinsRule()
 
-    @Shared seleniumAxisDescriptor
-    @Shared seleniumDynamicCapabilityDescriptor
+    @Shared hubDescriptor
 
     void configure(seleniumFile) {
 
-        if (seleniumAxisDescriptor == null) {
-            seleniumAxisDescriptor = Jenkins.instance.getDescriptor(Axis)
-        }
-        if (seleniumDynamicCapabilityDescriptor == null) {
-            seleniumDynamicCapabilityDescriptor = Jenkins.instance.getDescriptor(DynamicCapability)
+        if (hubDescriptor == null) {
+            hubDescriptor = Jenkins.instance.getDescriptor(DynamicCapability)
         }
 
-        seleniumAxisDescriptor.setServer(seleniumFile)
+        hubDescriptor.setServer(seleniumFile)
     }
 
     def 'Build'() {
         given:
         configure('/grid-2.33.0.html')
-        def sdc = new DynamicCapability(seleniumDynamicCapabilityDescriptor.loadDefaultItems())
+        def sdc = new DynamicCapability(hubDescriptor.loadDefaultItems())
 
         expect:
-        sdc.seleniumCapabilities.size() == 4
+        sdc.complexAxisItems.size() == 4
     }
 }
 

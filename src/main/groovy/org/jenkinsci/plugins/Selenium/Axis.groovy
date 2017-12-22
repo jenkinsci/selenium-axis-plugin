@@ -30,7 +30,6 @@ import hudson.model.Items
 import net.sf.json.JSONObject
 import org.jenkinsci.plugins.saucelabs.Levenshtien
 import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.hub.Capability
 import org.jenkinsci.plugins.hub.CapabilityRO
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
@@ -104,17 +103,17 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
 
         final String displayName = 'Selenium Capability Axis'
 
-        String server = 'http://localhost:4444'
+//        String server = 'http://localhost:4444'
+//
+//        Boolean sauceLabs = false
+//        String sauceLabsName
+//        Secret sauceLabsPwd
+//        String sauceLabsAPIURL = 'http://saucelabs.com/rest/v1/info/platforms/webdriver'
+//        String sauceLabsURL = 'http://ondemand.saucelabs.com:80'
 
-        Boolean sauceLabs = false
-        String sauceLabsName
-        Secret sauceLabsPwd
-        String sauceLabsAPIURL = 'http://saucelabs.com/rest/v1/info/platforms/webdriver'
-        String sauceLabsURL = 'http://ondemand.saucelabs.com:80'
-
-        //don't serialize this
-        @SuppressWarnings('UnnecessaryTransientModifier')
-        transient Map<String, List<? extends Capability>> sauceLabsCapabilities
+//        //don't serialize this
+//        @SuppressWarnings('UnnecessaryTransientModifier')
+//        transient Map<String, List<? extends Capability>> sauceLabsCapabilities
 
         List<ItemDescriptor> axisItemTypes() {
             def ait = Jenkins.instance.<Item,ItemDescriptor>getDescriptorList(Item)
@@ -132,89 +131,89 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
             ret
         }
 
-        List<? extends Capability> getSauceLabsCapabilities(String which) {
-            if (sauceLabs) {
-                try {
-                    if (sauceLabsCapabilities == null) {
-                        ICapabilityReader reader = new org.jenkinsci.plugins.saucelabs.CapabilityReader()
-                        reader.loadCapabilities(sauceLabsAPIURL)
-
-                        Selenium sel = new Selenium(reader, org.jenkinsci.plugins.saucelabs.CapabilityRO)
-                        sauceLabsCapabilities = [:]
-
-                        sauceLabsCapabilities['latest'] = sel.seleniumLatest
-                        sauceLabsCapabilities['all'] = sel.seleniumCapabilities
-                        sauceLabsCapabilities['web'] = sel.seleniumSelected
-                    }
-                    return sauceLabsCapabilities[which]
-
-                } catch (ex) {
-                    ItemList.emptyList()
-                }
-            } else {
-                ItemList.emptyList()
-            }
-        }
-
-        List<? extends Capability> getSeleniumCapabilities() {
-            try {
-                //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
-                ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
-
-                reader.loadCapabilities(server)
-
-                Selenium sel = new Selenium(reader, CapabilityRO)
-                sel.seleniumLatest
-
-            } catch (ex) {
-                ItemList.emptyList()
-            }
-        }
-        List<? extends Capability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
-
-            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
-            def cap = getSauceLabsCapabilities(which)
-            def myCap = cap.clone()
-
-            Collections.shuffle(myCap)
-
-            if (myCap.size() == 0) {
-                return ItemList.emptyList()
-            }
-
-            while (count > 0 && myCap.size() > 0) {
-                def current = myCap.pop()
-                boolean differentEnough = true
-
-                if( secureFilter.script != '') {
-                    Binding binding = new Binding()
-                    binding.setVariable('current', current)
-                    binding.setVariable('selected', selected)
-
-                    differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
-                } else {
-                    differentEnough = defaultDifferent(current, selected)
-                }
-
-                if (differentEnough) {
-                    selected << current
-                    count--
-                }
-
-            }
-            selected
-        }
-
-        static boolean defaultDifferent(Item current, List<ItemList> selected) {
-            def different = true
-            selected.any {
-                if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
-                    different = false
-                    true
-                }
-            }
-            return different
-        }
+//        List<? extends Capability> getSauceLabsCapabilities(String which) {
+//            if (sauceLabs) {
+//                try {
+//                    if (sauceLabsCapabilities == null) {
+//                        ICapabilityReader reader = new org.jenkinsci.plugins.saucelabs.CapabilityReader()
+//                        reader.loadCapabilities(sauceLabsAPIURL)
+//
+//                        Selenium sel = new Selenium(reader, org.jenkinsci.plugins.saucelabs.CapabilityRO)
+//                        sauceLabsCapabilities = [:]
+//
+//                        sauceLabsCapabilities['latest'] = sel.seleniumLatest
+//                        sauceLabsCapabilities['all'] = sel.seleniumCapabilities
+//                        sauceLabsCapabilities['web'] = sel.seleniumSelected
+//                    }
+//                    return sauceLabsCapabilities[which]
+//
+//                } catch (ex) {
+//                    ItemList.emptyList()
+//                }
+//            } else {
+//                ItemList.emptyList()
+//            }
+//        }
+//
+//        List<? extends Capability> getSeleniumCapabilities() {
+//            try {
+//                //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
+//                ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
+//
+//                reader.loadCapabilities(server)
+//
+//                Selenium sel = new Selenium(reader, CapabilityRO)
+//                sel.seleniumLatest
+//
+//            } catch (ex) {
+//                ItemList.emptyList()
+//            }
+//        }
+//        List<? extends Capability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+//
+//            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
+//            def cap = getSauceLabsCapabilities(which)
+//            def myCap = cap.clone()
+//
+//            Collections.shuffle(myCap)
+//
+//            if (myCap.size() == 0) {
+//                return ItemList.emptyList()
+//            }
+//
+//            while (count > 0 && myCap.size() > 0) {
+//                def current = myCap.pop()
+//                boolean differentEnough = true
+//
+//                if( secureFilter.script != '') {
+//                    Binding binding = new Binding()
+//                    binding.setVariable('current', current)
+//                    binding.setVariable('selected', selected)
+//
+//                    differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
+//                } else {
+//                    differentEnough = defaultDifferent(current, selected)
+//                }
+//
+//                if (differentEnough) {
+//                    selected << current
+//                    count--
+//                }
+//
+//            }
+//            selected
+//        }
+//
+//        static boolean defaultDifferent(Item current, List<ItemList> selected) {
+//            def different = true
+//            selected.any {
+//                if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
+//                    different = false
+//                    true
+//                }
+//            }
+//            return different
+//        }
 
         @Override
         boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
