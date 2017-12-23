@@ -28,21 +28,17 @@ import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
 import net.sf.json.JSONObject
-import org.jenkinsci.plugins.saucelabs.Levenshtien
-import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.hub.CapabilityRO
+import org.jenkinsci.plugins.hub.Capability
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter
 import jenkins.model.Jenkins
 import org.jenkinsci.complex.axes.AxisDescriptor
 import org.jenkinsci.complex.axes.Item
-import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.complex.axes.ItemDescriptor
 import hudson.util.Secret
 import org.kohsuke.stapler.StaplerRequest
 import hudson.model.Descriptor.FormException
-import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 
 class Axis extends org.jenkinsci.complex.axes.Axis {
     Boolean slOverride

@@ -4,7 +4,6 @@ import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
-import org.jenkinsci.plugins.selenium.Capability
 import org.kohsuke.stapler.DataBoundConstructor
 import org.jenkinsci.complex.axes.ItemDescriptor
 

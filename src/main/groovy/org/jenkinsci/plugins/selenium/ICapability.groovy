@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.selenium
 
+import org.jenkinsci.plugins.hub.Capability
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 
 /**

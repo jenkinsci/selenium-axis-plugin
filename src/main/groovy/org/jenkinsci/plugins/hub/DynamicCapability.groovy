@@ -9,7 +9,6 @@ import net.sf.json.JSONObject
 import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.selenium.Axis
-import org.jenkinsci.plugins.selenium.Capability
 import org.jenkinsci.plugins.selenium.Exception
 import org.jenkinsci.plugins.selenium.ICapability
 import org.jenkinsci.plugins.selenium.ICapabilityReader

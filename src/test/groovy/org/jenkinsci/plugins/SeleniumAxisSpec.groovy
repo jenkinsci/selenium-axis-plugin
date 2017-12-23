@@ -4,8 +4,7 @@ import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
 import hudson.util.Secret
 import jenkins.model.Jenkins
-import org.jenkinsci.plugins.hub.DynamicCapability
-import org.jenkinsci.plugins.selenium.Capability
+import org.jenkinsci.plugins.hub.Capability
 import org.jenkinsci.plugins.saucelabs.CapabilityReader
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext

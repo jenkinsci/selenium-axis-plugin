@@ -1,7 +1,6 @@
 package org.jenkinsci.plugins.hub
 
 import org.jenkinsci.complex.axes.ItemList
-import org.jenkinsci.plugins.selenium.Capability
 import org.jenkinsci.plugins.selenium.ICapabilityReader
 
 class Selenium {

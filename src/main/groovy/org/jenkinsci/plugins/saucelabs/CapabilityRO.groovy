@@ -3,7 +3,7 @@ package org.jenkinsci.plugins.saucelabs
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
-import org.jenkinsci.plugins.selenium.Capability
+import org.jenkinsci.plugins.hub.Capability
 
 class CapabilityRO extends Capability {
 

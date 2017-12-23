@@ -13,8 +13,7 @@ import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.saucelabs.CapabilityRO
-import org.jenkinsci.plugins.selenium.Capability
+import org.jenkinsci.plugins.hub.Capability
 import org.jenkinsci.plugins.selenium.Exception
 import org.jenkinsci.plugins.selenium.ICapability
 import org.jenkinsci.plugins.selenium.ICapabilityReader
