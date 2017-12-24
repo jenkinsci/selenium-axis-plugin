@@ -8,11 +8,13 @@ import spock.lang.Specification
 
 class Selenium_v3_8_1 extends Specification {
 
-    def 'Tests'() {
+    def setup() {
         CapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
         }
+    }
 
+    def 'Tests'() {
         when:
         def reader = new CapabilityReader()
         reader.loadCapabilities('/grid-3.8.1.html')

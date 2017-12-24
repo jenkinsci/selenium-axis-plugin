@@ -46,8 +46,8 @@ public abstract class Axis extends hudson.matrix.Axis {
         return Collections.unmodifiableList(complexAxisItems);
     }
 
-    @Override
-    public void addBuildVariable(String value, Map<String,String> map){}
+//    @Override
+//    public void addBuildVariable(String value, Map<String,String> map){}
 
     @Override
     public List<String> rebuild( MatrixBuild.MatrixBuildExecution context )

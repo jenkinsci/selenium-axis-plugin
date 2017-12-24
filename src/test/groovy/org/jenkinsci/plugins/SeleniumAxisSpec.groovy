@@ -23,18 +23,20 @@ class SeleniumAxisSpec extends Specification {
     JenkinsRule rule = new JenkinsRule()
     @Shared sauceLabsDescriptor, hubDescriptor, seleniumAxisDescriptor
 
-    MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
-
-        sauceLabsDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.saucelabs.DynamicCapability)
-        hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
-        seleniumAxisDescriptor = Jenkins.instance.getDescriptor(Axis)
-
+    def setup() {
         org.jenkinsci.plugins.hub.CapabilityReader.metaClass.rawRead = {
             String s -> Jsoup.parse(this.class.getResourceAsStream(s), 'UTF-8', '')
         }
         CapabilityReader.metaClass.rawRead = {
             String s -> this.class.getResource(s).text
         }
+    }
+
+    MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
+
+        sauceLabsDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.saucelabs.DynamicCapability)
+        hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
+        seleniumAxisDescriptor = Jenkins.instance.getDescriptor(Axis)
 
         hubDescriptor.server = seleniumFile
 
@@ -115,7 +117,7 @@ class SeleniumAxisSpec extends Specification {
     def 'Dynamic Grid Gone'() {
         given:
         def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json')
-        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
+        def seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
 
         when:
         hubDescriptor.setServer('null://')
@@ -130,8 +132,8 @@ class SeleniumAxisSpec extends Specification {
     def 'Dynamic Grid Arrived'() {
         given:
 
-        Axis.DescriptorImpl seleniumAxisDescriptor = Jenkins.instance.getDescriptorOrDie(Axis)
-
+        def hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
+        def seleniumAxisDescriptor = Jenkins.instance.getDescriptor(Axis)
         def matrixProject = rule.createProject(MatrixProject, "m")
 
         AxisList axl = new AxisList()
@@ -145,7 +147,8 @@ class SeleniumAxisSpec extends Specification {
 
         def build = matrixProject.scheduleBuild2(0).get()
 
-        expect: build.logFile.text.contains('SUCCESS')
+        expect:
+        build.logFile.text.contains('SUCCESS')
 
         when:
         def runs = build.runs
