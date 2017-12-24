@@ -3,27 +3,25 @@ package org.jenkinsci.plugins.saucelabs
 import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
+import hudson.model.Descriptor.FormException
 import hudson.model.Items
-import hudson.util.ListBoxModel
-import hudson.util.ListBoxModel.Option
 import hudson.util.FormValidation
+import hudson.util.ListBoxModel
 import hudson.util.Secret
 import net.sf.json.JSONObject
 import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.hub.Capability
-import org.jenkinsci.plugins.selenium.Exception
-import org.jenkinsci.plugins.selenium.ICapability
-import org.jenkinsci.plugins.selenium.ICapabilityReader
-import org.kohsuke.stapler.DataBoundConstructor
-import org.kohsuke.stapler.QueryParameter
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
 import org.jenkinsci.plugins.scriptsecurity.scripts.ClasspathEntry
+import org.jenkinsci.plugins.selenium.ICapability
+import org.jenkinsci.plugins.selenium.ICapabilityReader
+import org.jenkinsci.plugins.selenium.Manual
+import org.kohsuke.stapler.DataBoundConstructor
+import org.kohsuke.stapler.QueryParameter
 import org.kohsuke.stapler.StaplerRequest
-import hudson.model.Descriptor.FormException
 
 class DynamicCapability extends Container {
     Integer number = 3
@@ -113,8 +111,11 @@ class DynamicCapability extends Container {
 
         //don't serialize this
         @SuppressWarnings('UnnecessaryTransientModifier')
-        transient Map<String, List<? extends Capability>> capabilities
+        transient Map<String, List<? extends Manual>> capabilities
 
+        DescriptorImpl( ) {
+            super()
+        }
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
             DynamicCapability sdc = new DynamicCapability(loadDefaultItems())
@@ -126,7 +127,7 @@ class DynamicCapability extends Container {
         @Override
         boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             super.configure( req, formData)
-            sauceLabsCapabilities = null
+            capabilities = null
             true
         }
 
@@ -166,7 +167,7 @@ class DynamicCapability extends Container {
         String displayName = 'Detected SauceLabs Capability'
 
 
-        List<? extends Capability> getCapabilities(String which) {
+        List<? extends Manual> getCapabilities(String which) {
             if (sauceLabs) {
                 try {
                     if (capabilities == null) {
@@ -190,9 +191,9 @@ class DynamicCapability extends Container {
             }
         }
 
-        List<? extends Capability> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+        List<? extends Manual> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
 
-            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
+            ItemList<? extends Manual> selected = new ItemList<? extends Manual>()
             def cap = getCapabilities(which)
             def myCap = cap.clone()
 
@@ -208,8 +209,8 @@ class DynamicCapability extends Container {
 
                 if( secureFilter.script != '') {
                     Binding binding = new Binding()
-                    //binding.setVariable('current', current)
-                    //binding.setVariable('selected', selected)
+                    binding.setVariable('current', current)
+                    binding.setVariable('selected', selected)
 
                     differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
                 } else {
@@ -256,9 +257,9 @@ class DynamicCapability extends Container {
         ListBoxModel doFillCriteriaItems(@QueryParameter String criteria) {
             ListBoxModel cbm = new ListBoxModel()
 
-            cbm << new Option('All', 'all', 'all' == criteria)
-            cbm << new Option('Latest Browsers', 'latest', 'latest' == criteria)
-            cbm << new Option('Latest Firefox, Chrome, Safari, IE, Edge', 'web', 'web' == criteria)
+            cbm << new ListBoxModel.Option('All', 'all', 'all' == criteria)
+            cbm << new ListBoxModel.Option('Latest Browsers', 'latest', 'latest' == criteria)
+            cbm << new ListBoxModel.Option('Latest Firefox, Chrome, Safari, IE, Edge', 'web', 'web' == criteria)
 
             cbm
         }

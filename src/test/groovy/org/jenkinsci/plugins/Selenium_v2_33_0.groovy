@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins
 
 import org.jenkinsci.plugins.hub.Selenium
-import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.selenium.Manual
 import org.jenkinsci.plugins.hub.CapabilityReader
 import org.jsoup.Jsoup
 import spock.lang.Specification
@@ -16,7 +16,7 @@ class Selenium_v2_33_0 extends Specification {
         when:
         def reader = new CapabilityReader()
         reader.loadCapabilities('/grid-2.33.0.html')
-        def sel = new Selenium(reader, Capability)
+        def sel = new Selenium(reader, Manual)
 
         then:
         assert sel.seleniumCapabilities.size() == 4

@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.hub.Capability
+package org.jenkinsci.plugins.selenium.Manual
 /*
 This Groovy script is used to produce the global configuration option.
 

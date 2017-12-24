@@ -16,14 +16,14 @@ namespace(lib.FormTagLib).with {
         textbox( default:"label")
     }
 
-    optionalBlock(field:"slOverride", inline:true, title: 'Override SauceLabs User Details') {
-        entry(title: 'Username', field: 'slName', description: 'Username in Saucelabs') {
-            textbox()
-        }
-        entry(title: 'Password', field: 'slPassword', description: 'Password in Saucelabs') {
-            password()
-        }
-    }
+//    optionalBlock(field:"slOverride", inline:true, title: 'Override SauceLabs User Details') {
+//        entry(title: 'Username', field: 'slName', description: 'Username in Saucelabs') {
+//            textbox()
+//        }
+//        entry(title: 'Password', field: 'slPassword', description: 'Password in Saucelabs') {
+//            password()
+//        }
+//    }
 
 
     block{

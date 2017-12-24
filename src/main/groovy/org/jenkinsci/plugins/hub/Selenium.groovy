@@ -1,25 +1,26 @@
 package org.jenkinsci.plugins.hub
 
 import org.jenkinsci.complex.axes.ItemList
+import org.jenkinsci.plugins.selenium.Manual
 import org.jenkinsci.plugins.selenium.ICapabilityReader
 
 class Selenium {
 
-    ItemList<? extends Capability> seleniumCapabilities = new ItemList<? extends Capability>()
-    ItemList<? extends Capability> seleniumLatest = new ItemList<? extends Capability>()
-    ItemList<? extends Capability> seleniumSelected = new ItemList<? extends Capability>()
+    ItemList<? extends Manual> seleniumCapabilities = new ItemList<? extends Manual>()
+    ItemList<? extends Manual> seleniumLatest = new ItemList<? extends Manual>()
+    ItemList<? extends Manual> seleniumSelected = new ItemList<? extends Manual>()
 
     String seleniumVer
     List<String> browsers = []
     List<String> platforms = []
     List<String> versions = []
 
-    Selenium(ICapabilityReader reader, Class<? extends Capability> clazz  ) {
+    Selenium(ICapabilityReader reader, Class<? extends Manual> clazz  ) {
 
         Map<String, String> latestMap = [:]
 
         reader.capabilities.each {
-            Capability n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')
+            Manual n = clazz.newInstance(it.api_name, it.os, it.short_version ?: 'Any', 'SEL')
             if (seleniumCapabilities.contains(n)) {
                 seleniumCapabilities.get(seleniumCapabilities.indexOf(n)).incr()
                 if ( it.api_name == 'internet explorer' ) {
@@ -38,7 +39,7 @@ class Selenium {
                 }
             }
         }
-        seleniumLatest = new ItemList<? extends Capability>(latestMap.values())
+        seleniumLatest = new ItemList<? extends Manual>(latestMap.values())
 
         seleniumLatest.each {
             if (['internet explorer', 'chrome', 'safari', 'firefox', 'microsoftedge'].contains(it.browserName)) {
@@ -66,7 +67,7 @@ class Selenium {
         Collections.sort(versions)
     }
 
-    List<? extends Capability> getSeleniumCapability() {
+    List<? extends Manual> getSeleniumCapability() {
         seleniumCapabilities
     }
 

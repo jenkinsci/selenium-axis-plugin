@@ -4,10 +4,11 @@ import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
+import org.jenkinsci.plugins.selenium.Manual
 import org.kohsuke.stapler.DataBoundConstructor
 import org.jenkinsci.complex.axes.ItemDescriptor
 
-class CapabilityRO extends Capability {
+class CapabilityRO extends Manual {
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {

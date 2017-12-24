@@ -17,7 +17,5 @@ namespace(lib.FormTagLib).with {
             textbox()
         }
 
-
-        }
     }
 }

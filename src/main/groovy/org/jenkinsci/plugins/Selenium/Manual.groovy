@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.hub
+package org.jenkinsci.plugins.selenium
 
 import hudson.Extension
 import hudson.init.InitMilestone
@@ -10,7 +10,7 @@ import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemDescriptor
 import org.kohsuke.stapler.QueryParameter
 
-class Capability extends  Item implements Comparable {
+class Manual extends  Item implements Comparable {
 
     String browserName
     String platformName
@@ -19,7 +19,7 @@ class Capability extends  Item implements Comparable {
     @SuppressWarnings('UnnecessaryTransientModifier')
     transient Integer maxInstances
 
-    Capability() {
+    Manual() {
         browserName = 'Any'
         platformName = 'Any'
         browserVersion = 'Any'
@@ -28,11 +28,11 @@ class Capability extends  Item implements Comparable {
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {
-        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.SeleniumCapability", Capability);
+        Items.XSTREAM2.addCompatibilityAlias("org.jenkinsci.plugins.SeleniumCapability", Manual);
     }
 
     @DataBoundConstructor
-    Capability(String browserName, String platformName, String browserVersion, String capType) {
+    Manual(String browserName, String platformName, String browserVersion, String capType) {
         this.capType = capType ?: 'SEL'
         this.browserName = browserName ?: 'Any'
         this.platformName = platformName ?: 'Any'
@@ -40,8 +40,8 @@ class Capability extends  Item implements Comparable {
         this.maxInstances = 1
     }
 
-    Capability(String browserName, String platformName, String browserVersion) {
-        Capability(browserName, platformName, browserVersion, 'SEL')
+    Manual(String browserName, String platformName, String browserVersion) {
+        Manual(browserName, platformName, browserVersion, 'SEL')
     }
 
     String getCapType() {

@@ -4,7 +4,7 @@ import hudson.matrix.MatrixProject
 import hudson.matrix.AxisList
 import hudson.util.Secret
 import jenkins.model.Jenkins
-import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.selenium.Manual
 import org.jenkinsci.plugins.saucelabs.CapabilityReader
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 import org.jenkinsci.plugins.scriptsecurity.scripts.ApprovalContext
@@ -67,8 +67,8 @@ class SeleniumAxisSpec extends Specification {
 
         def matrixProject = rule.createProject(MatrixProject, "m")
 
-        def sc = new Capability()
-        def sc2 = new Capability('Browser', 'Platform', 'Version', 'SEL')
+        def sc = new Manual()
+        def sc2 = new Manual('Browser', 'Platform', 'Version', 'SEL')
         def scont = []
         scont.add(sc)
         scont.add(sc2)

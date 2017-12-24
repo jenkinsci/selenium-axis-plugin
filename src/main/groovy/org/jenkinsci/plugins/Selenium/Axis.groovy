@@ -28,7 +28,6 @@ import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
 import net.sf.json.JSONObject
-import org.jenkinsci.plugins.hub.Capability
 import org.kohsuke.stapler.DataBoundConstructor
 import hudson.util.FormValidation
 import org.kohsuke.stapler.QueryParameter
@@ -60,8 +59,8 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
         this.slPassword = slPassword
     }
 
-    List<? extends Capability> getSeleniumCapabilities() {
-        this.complexAxisItems as List<? extends Capability>
+    List<? extends Manual> getSeleniumCapabilities() {
+        this.complexAxisItems as List<? extends Manual>
     }
 
     String getURL(String which) {
@@ -98,18 +97,6 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
     static class DescriptorImpl extends AxisDescriptor {
 
         final String displayName = 'Selenium Capability Axis'
-
-//        String server = 'http://localhost:4444'
-//
-//        Boolean sauceLabs = false
-//        String sauceLabsName
-//        Secret sauceLabsPwd
-//        String sauceLabsAPIURL = 'http://saucelabs.com/rest/v1/info/platforms/webdriver'
-//        String sauceLabsURL = 'http://ondemand.saucelabs.com:80'
-
-//        //don't serialize this
-//        @SuppressWarnings('UnnecessaryTransientModifier')
-//        transient Map<String, List<? extends Capability>> sauceLabsCapabilities
 
         List<ItemDescriptor> axisItemTypes() {
             def ait = Jenkins.instance.<Item,ItemDescriptor>getDescriptorList(Item)
@@ -211,50 +198,50 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
 //            return different
 //        }
 
-        @Override
-        boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-            super.configure( req, formData)
-            sauceLabsCapabilities = null
-            true
-        }
+//        @Override
+//        boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+//            super.configure( req, formData)
+//            sauceLabsCapabilities = null
+//            true
+//        }
 
-        FormValidation doCheckServer(@QueryParameter String value) {
-            if (value.isEmpty()) {
-                return FormValidation.error('You must provide an URL.')
-            }
-
-            try {
-                new URL(value)
-            } catch (final MalformedURLException e) {
-                return FormValidation.error('This is not a valid URL.')
-            }
-            FormValidation.ok()
-        }
-
-        FormValidation doCheckSauceLabsURL(@QueryParameter String value) {
-            if (value.isEmpty()) {
-                return FormValidation.error('You must provide an URL.')
-            }
-
-            try {
-                new URL(value)
-            } catch (final MalformedURLException e) {
-                return FormValidation.error('This is not a valid URL.')
-            }
-            FormValidation.ok()
-        }
-
-        FormValidation doCheckSauceLabsAPIURL(@QueryParameter String value) {
-            if (value.isEmpty()) {
-                return FormValidation.error('You must provide an URL.')
-            }
-
-            try {
-                new URL(value)
-            } catch (final MalformedURLException e) {
-                return FormValidation.error('This is not a valid URL.')
-            }
-            FormValidation.ok()
-        }
+//        FormValidation doCheckServer(@QueryParameter String value) {
+//            if (value.isEmpty()) {
+//                return FormValidation.error('You must provide an URL.')
+//            }
+//
+//            try {
+//                new URL(value)
+//            } catch (final MalformedURLException e) {
+//                return FormValidation.error('This is not a valid URL.')
+//            }
+//            FormValidation.ok()
+//        }
+//
+//        FormValidation doCheckSauceLabsURL(@QueryParameter String value) {
+//            if (value.isEmpty()) {
+//                return FormValidation.error('You must provide an URL.')
+//            }
+//
+//            try {
+//                new URL(value)
+//            } catch (final MalformedURLException e) {
+//                return FormValidation.error('This is not a valid URL.')
+//            }
+//            FormValidation.ok()
+//        }
+//
+//        FormValidation doCheckSauceLabsAPIURL(@QueryParameter String value) {
+//            if (value.isEmpty()) {
+//                return FormValidation.error('You must provide an URL.')
+//            }
+//
+//            try {
+//                new URL(value)
+//            } catch (final MalformedURLException e) {
+//                return FormValidation.error('This is not a valid URL.')
+//            }
+//            FormValidation.ok()
+//        }
     }
 }

@@ -3,9 +3,9 @@ package org.jenkinsci.plugins.saucelabs
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
-import org.jenkinsci.plugins.hub.Capability
+import org.jenkinsci.plugins.selenium.Manual
 
-class CapabilityRO extends Capability {
+class CapabilityRO extends Manual {
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {

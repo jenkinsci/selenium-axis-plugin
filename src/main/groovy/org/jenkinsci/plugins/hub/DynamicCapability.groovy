@@ -3,25 +3,22 @@ package org.jenkinsci.plugins.hub
 import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
+import hudson.model.Descriptor.FormException
 import hudson.model.Items
 import hudson.util.FormValidation
 import net.sf.json.JSONObject
+import org.jenkinsci.complex.axes.Container
+import org.jenkinsci.complex.axes.ContainerDescriptor
+import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
-import org.jenkinsci.plugins.selenium.Axis
 import org.jenkinsci.plugins.selenium.Exception
 import org.jenkinsci.plugins.selenium.ICapability
 import org.jenkinsci.plugins.selenium.ICapabilityReader
+import org.jenkinsci.plugins.selenium.Manual
 import org.kohsuke.stapler.DataBoundConstructor
-import hudson.model.Descriptor
-import jenkins.model.Jenkins
-import org.jenkinsci.complex.axes.AxisDescriptor
-import org.jenkinsci.complex.axes.Item
-import org.jenkinsci.complex.axes.Container
-import org.jenkinsci.complex.axes.ContainerDescriptor
 import org.kohsuke.stapler.QueryParameter
 import org.kohsuke.stapler.StaplerRequest
-import hudson.model.Descriptor.FormException
 
 class DynamicCapability extends  Container {
 
@@ -77,13 +74,17 @@ class DynamicCapability extends  Container {
     @Extension static class DescriptorImpl extends ContainerDescriptor implements ICapability{
         String server = 'http://localhost:4444'
 
-        //so we need this to get at the name of the selenium server in the global config
-        static Descriptor<? extends AxisDescriptor> getTopLevelDescriptor() {
-            Axis.DescriptorImpl sad = Jenkins.instance.getDescriptor(Axis)
-            sad.load()
-
-            sad
+        DescriptorImpl( ) {
+            super()
         }
+
+        //so we need this to get at the name of the selenium server in the global config
+//        static Descriptor<? extends AxisDescriptor> getTopLevelDescriptor() {
+//            Axis.DescriptorImpl sad = Jenkins.instance.getDescriptor(Axis)
+//            sad.load()
+//
+//            sad
+//        }
 
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
@@ -96,7 +97,6 @@ class DynamicCapability extends  Container {
         @Override
         boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             super.configure( req, formData)
-            //capabilities = null
             true
         }
 
@@ -113,7 +113,7 @@ class DynamicCapability extends  Container {
             FormValidation.ok()
         }
 
-        List<? extends Capability> getCapabilities(String which) {
+        List<? extends Manual> getCapabilities(String which) {
             try {
                 //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
                 ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
@@ -127,7 +127,7 @@ class DynamicCapability extends  Container {
                 ItemList.emptyList()
             }
         }
-        List<? extends Capability> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
+        List<? extends Manual> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
             getCapabilities(which)
         }
 
