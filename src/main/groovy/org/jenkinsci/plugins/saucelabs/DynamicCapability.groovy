@@ -10,6 +10,7 @@ import hudson.util.ListBoxModel
 import hudson.util.Secret
 import net.sf.json.JSONObject
 import org.jenkinsci.complex.axes.Container
+import org.jenkinsci.complex.axes.ContainerDescriptor
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemList
 import org.jenkinsci.plugins.hub.Selenium
@@ -112,7 +113,7 @@ class DynamicCapability extends Container {
         list
     }
 
-    @Extension static class DescriptorImpl extends org.jenkinsci.plugins.hub.DynamicCapability.DescriptorImpl implements ICapability{
+    @Extension static class DescriptorImpl extends ContainerDescriptor implements ICapability{
         Boolean sauceLabs = false
         String sauceLabsName
         Secret sauceLabsPwd
@@ -124,7 +125,7 @@ class DynamicCapability extends Container {
         transient Map<String, List<? extends Manual>> capabilities
 
         DescriptorImpl( ) {
-            super()
+            load()
         }
 
         @Override
@@ -286,6 +287,24 @@ class DynamicCapability extends Container {
             } catch (Exception e) {
                 return FormValidation.error('Client error : ' + e.message)
             }
+        }
+
+        @Override
+        String getURL(String which) {
+            if (which == 'SL') {
+                //if (slOverride) {
+                //    buildURL(slName, slPassword, descriptor.sauceLabsURL)
+                //} else {
+                    buildURL(sauceLabsName, sauceLabsPwd, sauceLabsURL)
+                //}
+            } else {
+                return ''
+            }
+        }
+
+        static String buildURL(String name, Secret pwd, String url) {
+            String myurl = url - 'http://'
+            "http://${name}:${pwd}@${myurl}"
         }
     }
 }

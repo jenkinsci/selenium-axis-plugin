@@ -68,5 +68,10 @@ class Manual extends  Item implements Comparable {
 
             cbm
         }
+
+        String getURL(String which) {
+            ""
+        }
+
     }
 }

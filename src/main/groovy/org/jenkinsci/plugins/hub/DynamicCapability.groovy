@@ -6,6 +6,7 @@ import hudson.init.Initializer
 import hudson.model.Descriptor.FormException
 import hudson.model.Items
 import hudson.util.FormValidation
+import hudson.util.Secret
 import net.sf.json.JSONObject
 import org.jenkinsci.complex.axes.Container
 import org.jenkinsci.complex.axes.ContainerDescriptor
@@ -75,7 +76,7 @@ class DynamicCapability extends  Container {
         String server = 'http://localhost:4444'
 
         DescriptorImpl( ) {
-            super()
+            load()
         }
 
         //so we need this to get at the name of the selenium server in the global config
@@ -137,5 +138,14 @@ class DynamicCapability extends  Container {
         }
 
         String displayName = 'Detected Selenium Capability'
+
+        @Override
+        String getURL(String which) {
+            if (which == 'SEL') {
+                server
+            } else {
+                return ""
+            }
+        }
     }
 }

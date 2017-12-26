@@ -27,17 +27,13 @@ import hudson.Extension
 import hudson.init.InitMilestone
 import hudson.init.Initializer
 import hudson.model.Items
-import net.sf.json.JSONObject
-import org.kohsuke.stapler.DataBoundConstructor
-import hudson.util.FormValidation
-import org.kohsuke.stapler.QueryParameter
+import hudson.util.Secret
 import jenkins.model.Jenkins
 import org.jenkinsci.complex.axes.AxisDescriptor
 import org.jenkinsci.complex.axes.Item
 import org.jenkinsci.complex.axes.ItemDescriptor
-import hudson.util.Secret
-import org.kohsuke.stapler.StaplerRequest
-import hudson.model.Descriptor.FormException
+import org.jenkinsci.plugins.hub.DynamicCapability
+import org.kohsuke.stapler.DataBoundConstructor
 
 class Axis extends org.jenkinsci.complex.axes.Axis {
     Boolean slOverride
@@ -64,33 +60,23 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
     }
 
     String getURL(String which) {
-        if (which == 'SEL') {
-            descriptor.server
-        } else if (which == 'SL') {
-            if (slOverride) {
-                buildURL(slName, slPassword, descriptor.sauceLabsURL)
-            } else {
-                buildURL(descriptor.sauceLabsName, descriptor.sauceLabsPwd, descriptor.sauceLabsURL)
-            }
-        }
+        def descriptor = Jenkins.instance.getDescriptor(Axis)
+
+        descriptor.axisItemTypes().find { d -> d.getURL(which) != ""}
     }
 
-    static String buildURL(String name, Secret pwd, String url) {
-        String myurl = url - 'http://'
-        "http://${name}:${pwd}@${myurl}"
-    }
 
     @Override
     void addBuildVariable(String value, Map<String,String> map) {
 
-       //so the value is PLATFORM-BROWSER-VERSION
+       //so the value is TYPE-PLATFORM-BROWSER-VERSION
 
        List<String> parts = value.split(/-/)
 
        map.put(name + '_PLATFORM', parts[1])
        map.put(name + '_BROWSER', parts[2])
        map.put(name + '_VERSION', parts[3])
-       //map.put(name + '_URL', getURL(parts[0]))
+       map.put(name + '_URL', getURL(parts[0]))
     }
 
     @Extension
@@ -113,135 +99,5 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
             }
             ret
         }
-
-//        List<? extends Capability> getSauceLabsCapabilities(String which) {
-//            if (sauceLabs) {
-//                try {
-//                    if (sauceLabsCapabilities == null) {
-//                        ICapabilityReader reader = new org.jenkinsci.plugins.saucelabs.CapabilityReader()
-//                        reader.loadCapabilities(sauceLabsAPIURL)
-//
-//                        Selenium sel = new Selenium(reader, org.jenkinsci.plugins.saucelabs.CapabilityRO)
-//                        sauceLabsCapabilities = [:]
-//
-//                        sauceLabsCapabilities['latest'] = sel.seleniumLatest
-//                        sauceLabsCapabilities['all'] = sel.seleniumCapabilities
-//                        sauceLabsCapabilities['web'] = sel.seleniumSelected
-//                    }
-//                    return sauceLabsCapabilities[which]
-//
-//                } catch (ex) {
-//                    ItemList.emptyList()
-//                }
-//            } else {
-//                ItemList.emptyList()
-//            }
-//        }
-//
-//        List<? extends Capability> getSeleniumCapabilities() {
-//            try {
-//                //def sel = new Selenium(Selenium.load(server), SeleniumCapabilityRO)
-//                ICapabilityReader reader = new org.jenkinsci.plugins.hub.CapabilityReader()
-//
-//                reader.loadCapabilities(server)
-//
-//                Selenium sel = new Selenium(reader, CapabilityRO)
-//                sel.seleniumLatest
-//
-//            } catch (ex) {
-//                ItemList.emptyList()
-//            }
-//        }
-//        List<? extends Capability> getRandomSauceLabsCapabilities(String which, Integer count, SecureGroovyScript secureFilter) {
-//
-//            ItemList<? extends Capability> selected = new ItemList<? extends Capability>()
-//            def cap = getSauceLabsCapabilities(which)
-//            def myCap = cap.clone()
-//
-//            Collections.shuffle(myCap)
-//
-//            if (myCap.size() == 0) {
-//                return ItemList.emptyList()
-//            }
-//
-//            while (count > 0 && myCap.size() > 0) {
-//                def current = myCap.pop()
-//                boolean differentEnough = true
-//
-//                if( secureFilter.script != '') {
-//                    Binding binding = new Binding()
-//                    binding.setVariable('current', current)
-//                    binding.setVariable('selected', selected)
-//
-//                    differentEnough = secureFilter.evaluate(getClass().classLoader, binding)
-//                } else {
-//                    differentEnough = defaultDifferent(current, selected)
-//                }
-//
-//                if (differentEnough) {
-//                    selected << current
-//                    count--
-//                }
-//
-//            }
-//            selected
-//        }
-//
-//        static boolean defaultDifferent(Item current, List<ItemList> selected) {
-//            def different = true
-//            selected.any {
-//                if (Levenshtien.distance(current.toString(), it.toString()) < 12) {
-//                    different = false
-//                    true
-//                }
-//            }
-//            return different
-//        }
-
-//        @Override
-//        boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
-//            super.configure( req, formData)
-//            sauceLabsCapabilities = null
-//            true
-//        }
-
-//        FormValidation doCheckServer(@QueryParameter String value) {
-//            if (value.isEmpty()) {
-//                return FormValidation.error('You must provide an URL.')
-//            }
-//
-//            try {
-//                new URL(value)
-//            } catch (final MalformedURLException e) {
-//                return FormValidation.error('This is not a valid URL.')
-//            }
-//            FormValidation.ok()
-//        }
-//
-//        FormValidation doCheckSauceLabsURL(@QueryParameter String value) {
-//            if (value.isEmpty()) {
-//                return FormValidation.error('You must provide an URL.')
-//            }
-//
-//            try {
-//                new URL(value)
-//            } catch (final MalformedURLException e) {
-//                return FormValidation.error('This is not a valid URL.')
-//            }
-//            FormValidation.ok()
-//        }
-//
-//        FormValidation doCheckSauceLabsAPIURL(@QueryParameter String value) {
-//            if (value.isEmpty()) {
-//                return FormValidation.error('You must provide an URL.')
-//            }
-//
-//            try {
-//                new URL(value)
-//            } catch (final MalformedURLException e) {
-//                return FormValidation.error('This is not a valid URL.')
-//            }
-//            FormValidation.ok()
-//        }
     }
 }

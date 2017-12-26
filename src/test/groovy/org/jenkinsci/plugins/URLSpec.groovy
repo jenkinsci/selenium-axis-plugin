@@ -20,45 +20,41 @@ class URLSpec extends Specification {
 
     @Rule
     JenkinsRule rule = new JenkinsRule()
-    @Shared sauceLabsDescriptor, hubDescriptor
 
-    MatrixProject configure(seleniumFile, sauceLabsFile, advanced = false) {
-
-        sauceLabsDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.saucelabs.DynamicCapability)
-        hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
-
-        sauceLabsDescriptor.sauceLabs = true
+    def 'saucelabs_url'() {
+        given:
+        def sauceLabsDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.saucelabs.DynamicCapability)
         sauceLabsDescriptor.sauceLabsName = 'test'
         sauceLabsDescriptor.sauceLabsPwd = new Secret('pass')
-        sauceLabsDescriptor.sauceLabsAPIURL = sauceLabsFile
+
+        when:
+        def url = sauceLabsDescriptor.getURL('SL')
+
+        then:
+        url.equals('http://test:pass@ondemand.saucelabs.com:80')
+
+        when:
+        url = sauceLabsDescriptor.getURL('SEL')
+
+        then:
+        url.equals('')
 
     }
 
     def 'hub_url'() {
         given:
-        def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json', true)
+        def hubDescriptor = Jenkins.instance.getDescriptor(org.jenkinsci.plugins.hub.DynamicCapability)
 
         when:
-        def build = matrixProject.scheduleBuild2(0).get()
-        def runs = build.runs
+        def url = hubDescriptor.getURL('SL')
 
         then:
-        build.logFile.text.contains('SUCCESS')
-        runs.every { it.logFile.text.contains('SUCCESS') }
-        runs.size() == 7
-    }
-
-    def 'saucelabs_url'() {
-        given:
-        def matrixProject = configure('/grid-2.35.0.html', '/saucelabs_3.json')
+        url.equals('')
 
         when:
-        def build = matrixProject.scheduleBuild2(0).get()
-        def runs = build.runs
+        url = hubDescriptor.getURL('SEL')
 
         then:
-        build.logFile.text.contains('SUCCESS')
-        runs.every { it.logFile.text.contains('SUCCESS') }
-        runs.size() == 7
+        url.equals('http://localhost:4444')
     }
 }
