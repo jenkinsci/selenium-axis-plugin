@@ -8,4 +8,5 @@ import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript
 interface ICapability {
     List<? extends Manual> getCapabilities(String which)
     List<? extends Manual> getRandomCapabilities(String which, Integer count, SecureGroovyScript secureFilter)
+    //String getURL()
 }

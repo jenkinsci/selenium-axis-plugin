@@ -63,35 +63,35 @@ class Axis extends org.jenkinsci.complex.axes.Axis {
         this.complexAxisItems as List<? extends Manual>
     }
 
-//    String getURL(String which) {
-//        if (which == 'SEL') {
-//            descriptor.server
-//        } else if (which == 'SL') {
-//            if (slOverride) {
-//                buildURL(slName, slPassword, descriptor.sauceLabsURL)
-//            } else {
-//                buildURL(descriptor.sauceLabsName, descriptor.sauceLabsPwd, descriptor.sauceLabsURL)
-//            }
-//        }
-//    }
-//
-//    static String buildURL(String name, Secret pwd, String url) {
-//        String myurl = url - 'http://'
-//        "http://${name}:${pwd}@${myurl}"
-//    }
+    String getURL(String which) {
+        if (which == 'SEL') {
+            descriptor.server
+        } else if (which == 'SL') {
+            if (slOverride) {
+                buildURL(slName, slPassword, descriptor.sauceLabsURL)
+            } else {
+                buildURL(descriptor.sauceLabsName, descriptor.sauceLabsPwd, descriptor.sauceLabsURL)
+            }
+        }
+    }
 
-//    @Override
-//    void addBuildVariable(String value, Map<String,String> map) {
-//
-//       //so the value is PLATFORM-BROWSER-VERSION
-//
-//       List<String> parts = value.split(/-/)
-//
-//       map.put(name + '_PLATFORM', parts[1])
-//       map.put(name + '_BROWSER', parts[2])
-//       map.put(name + '_VERSION', parts[3])
-//       map.put(name + '_URL', getURL(parts[0]))
-//    }
+    static String buildURL(String name, Secret pwd, String url) {
+        String myurl = url - 'http://'
+        "http://${name}:${pwd}@${myurl}"
+    }
+
+    @Override
+    void addBuildVariable(String value, Map<String,String> map) {
+
+       //so the value is PLATFORM-BROWSER-VERSION
+
+       List<String> parts = value.split(/-/)
+
+       map.put(name + '_PLATFORM', parts[1])
+       map.put(name + '_BROWSER', parts[2])
+       map.put(name + '_VERSION', parts[3])
+       //map.put(name + '_URL', getURL(parts[0]))
+    }
 
     @Extension
     static class DescriptorImpl extends AxisDescriptor {

@@ -87,9 +87,9 @@ class DynamicCapability extends Container {
         complexAxisItems
     }
 
-    String toString() {
-        'DetectedSauceLibs'
-    }
+//    String toString() {
+//        'DetectedSauceLibs'
+//    }
 
     @SuppressWarnings('UnusedPrivateMethod')
     private Object readResolve() {
@@ -100,6 +100,16 @@ class DynamicCapability extends Container {
             filter = null
         }
         this
+    }
+
+    @Override
+    List<String> getValues(List<String> list) {
+        complexAxisItems.each { list.add(it.toString()) }
+
+        if (list.size() == 0) {
+            list.add('Rebuilt at build time')
+        }
+        list
     }
 
     @Extension static class DescriptorImpl extends org.jenkinsci.plugins.hub.DynamicCapability.DescriptorImpl implements ICapability{
@@ -116,6 +126,7 @@ class DynamicCapability extends Container {
         DescriptorImpl( ) {
             super()
         }
+
         @Override
         List<? extends Item> loadDefaultItems(List<? extends Item> cai) {
             DynamicCapability sdc = new DynamicCapability(loadDefaultItems())
@@ -124,10 +135,11 @@ class DynamicCapability extends Container {
 
             cai
         }
+
         @Override
         boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             super.configure( req, formData)
-            capabilities = null
+            //capabilities = null
             true
         }
 

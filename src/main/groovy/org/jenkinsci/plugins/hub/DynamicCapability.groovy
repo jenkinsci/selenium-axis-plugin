@@ -44,9 +44,9 @@ class DynamicCapability extends  Container {
         super( seleniumCapabilities)
     }
 
-    String toString() {
-        'DetectedSelenium'
-    }
+//    String toString() {
+//        'DetectedSelenium'
+//    }
 
     @Override
     List<String> rebuild(List<String> list) {
