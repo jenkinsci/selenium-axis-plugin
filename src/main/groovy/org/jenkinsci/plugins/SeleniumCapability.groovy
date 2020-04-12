@@ -45,6 +45,7 @@ class SeleniumCapability extends  Item implements Comparable {
     }
 
     @Override
+    @SuppressWarnings('UnnecessaryGetter')
     String toString() {
         String.format('%s-%s-%s-%s', getCapType(), platformName, browserName, browserVersion)
     }

@@ -6,7 +6,7 @@ buildscript {
         }
         // The plugin is currently only available via the Jenkins
         // Maven repository, but has dependencies in Maven Central.
-        mavenCentral()
+        maven { url 'https://repo1.maven.org/maven2/' }
     }
     dependencies {
         classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.6.0'
@@ -37,7 +37,13 @@ repositories {
     //maven {
     //    delegate.url("https://repository-saucelabs.forge.cloudbees.com/release")
     //}
-    mavenCentral()
+    maven { url 'https://repo1.maven.org/maven2/' }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.kohsuke.stapler:stapler:1.195'
+    }
 }
 
 dependencies {
